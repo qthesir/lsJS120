@@ -75,6 +75,14 @@ function createPlayer() {
     availableMoves: createMove(),
     currentMove: null,
     score: 0,
+
+    incrementScore() {
+      this.score += 1;
+    },
+
+    resetScore() {
+      this.score = 0;
+    },
   };
 }
 
@@ -82,7 +90,6 @@ function createComputer() {
   let playerObject = createPlayer();
 
   let computerObject = {
-
     choose() {
       let randomIndex = Math.floor(
         Math.random() * this.availableMoves.moves.length
@@ -98,7 +105,6 @@ function createHuman() {
   let playerObject = createPlayer();
 
   let humanObject = {
-
     choose() {
       let choice;
       while (true) {
@@ -123,24 +129,6 @@ function createMove() {
   };
 }
 
-let compare = function (move1, move2) {
-  if (move1 === "rock" && move2 === "scissors") {
-    return move1;
-  } else if (move1 === "scissors" && move2 === "paper") {
-    return move1;
-  } else if (move1 === "paper" && move2 === "rock") {
-    return move1;
-  } else if (move2 === "rock" && move1 === "scissors") {
-    return move2;
-  } else if (move2 === "scissors" && move1 === "paper") {
-    return move2;
-  } else if (move2 === "paper" && move1 === "rock") {
-    return move2;
-  } else {
-    return "tie";
-  }
-};
-
 const RPSGame = {
   human: createHuman(),
   computer: createComputer(),
@@ -153,24 +141,88 @@ const RPSGame = {
     console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
   },
 
-  displayWinner() {
-    console.log(`You chose ${this.human.currentMove}`);
-    console.log(`Computer chose ${this.computer.currentMove}`);
-    let winner = compare(this.human.currentMove, this.computer.currentMove);
-    if (winner === "tie") {
-      console.log("Its a tie!");
+  compare() {
+    if (
+      this.human.currentMove === "rock" &&
+      this.computer.currentMove === "scissors"
+    ) {
+      return "human";
+    } else if (
+      this.human.currentMove === "scissors" &&
+      this.computer.currentMove === "paper"
+    ) {
+      return "human";
+    } else if (
+      this.human.currentMove === "paper" &&
+      this.computer.currentMove === "rock"
+    ) {
+      return "human";
+    } else if (
+      this.computer.currentMove === "rock" &&
+      this.human.currentMove === "scissors"
+    ) {
+      return "computer";
+    } else if (
+      this.computer.currentMove === "scissors" &&
+      this.human.currentMove === "paper"
+    ) {
+      return "computer";
+    } else if (
+      this.computer.currentMove === "paper" &&
+      this.human.currentMove === "rock"
+    ) {
+      return "computer";
     } else {
-      console.log(
-        this.human.currentMove === winner ? "You win!" : "Computer wins!"
-      );
+      return "tie";
     }
   },
 
-  displayScore() {},
+  displayWinner() {
+    console.log(`You chose ${this.human.currentMove}`);
+    console.log(`Computer chose ${this.computer.currentMove}`);
+    let winner = this.compare();
+    if (winner === "tie") {
+      console.log("Its a tie!");
+    } else {
+      console.log("human" === winner ? "You win!" : "Computer wins!");
+    }
+  },
 
-  pickGrandWinner() {},
+  updateScore() {
+    if (this.compare() === "human") {
+      this.human.incrementScore();
+    } else if (this.compare() === "computer") {
+      this.computer.incrementScore();
+    }
+  },
 
-  displayGrandWinner() {},
+  displayScore() {
+    console.log(
+      `Your score: ${this.human.score}\nComputer's Score: ${this.computer.score} `
+    );
+  },
+
+  pickGrandWinner() {
+    if (this.human.score >= 5) {
+      return "human";
+    } else if (this.computer.score >= 5) {
+      return "computer";
+    } else {
+      return "no winner";
+    }
+  },
+
+  displayGrandWinner() {
+    console.log("------Final Score-------");
+    console.log(`You: ${this.human.score}`);
+    console.log(`Computer: ${this.computer.score}`);
+    console.log("------------------------");
+    if (this.pickGrandWinner() === "human") {
+      console.log("Congratulations! You're the reining champion!");
+    } else if (this.pickGrandWinner() === "computer") {
+      console.log("Computer is the reining champion!");
+    }
+  },
 
   playAgain() {
     console.log("Would you like to play again? (y/n)");
@@ -181,11 +233,15 @@ const RPSGame = {
   play() {
     this.displayWelcomeMessage();
     while (true) {
+      this.human.resetScore();
+      this.computer.resetScore();
       while (true) {
         this.human.choose();
         this.computer.choose();
         this.displayWinner();
+        this.updateScore();
         this.displayScore();
+        if (this.pickGrandWinner() !== "no winner") break;
       }
       this.displayGrandWinner();
       if (!this.playAgain()) break;
