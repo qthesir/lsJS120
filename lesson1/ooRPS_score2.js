@@ -129,6 +129,25 @@ function createMove() {
   };
 }
 
+function createScore() {
+  return {
+    humanScore: 0,
+    computerScore: 0,
+
+    incrementScore() {},
+
+    resetScore() {},
+
+    compareScore() {},
+
+    pickWinner() {},
+
+    displayScore() {},
+
+    displayGrandWinner() {},
+  };
+}
+
 const RPSGame = {
   human: createHuman(),
   computer: createComputer(),
@@ -268,14 +287,5 @@ Options so far:
 - Score on the player object, with a separate function on the RPSGame
 - Score as an object, that contained the two players scores, and a function to check whether one of the scores has reached
 5 and which one. 
-
-Looking at the two main options: Associating the score with the player feels more intuitive, since
-that is, in fact, the players score. However, it does force you to add more logic into the
-application engine compared to managing the score entirely in its own object. If the 
-score is in its own object, then you can increment, reset, compare, and pick a winner, all 
-in the same object. This keeps things pretty tidy. 
-
-Oof, but, upon implementation, the updating the score gets pretty messy... it looks like
-I'd have to update the score in an outside function anyway, depending on who won. 
 
 */
