@@ -123,6 +123,28 @@ function createHuman() {
   return Object.assign(playerObject, humanObject);
 }
 
+function createMoves() {
+  return {
+    moves: ["rock", "paper", "scissors", "spock", "lizard"],
+    historicalMoves: { human: [], computer: [] },
+
+    updateMoves(player, currentMove) {
+      if (player === "human") {
+        this.historicalMoves.human.push(currentMove);
+      } else if (player === "computer") {
+        this.historicalMoves.computer.push(currentMove);
+      }
+    },
+
+    resetMoves() {
+      this.historicalMoves.human = [];
+      this.historicalMoves.computer = [];
+    },
+
+    displayMoves() {},
+  };
+}
+
 function createRules(human, computer) {
   return {
     human,
