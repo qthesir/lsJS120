@@ -72,7 +72,7 @@ const rlsync = require("readline-sync");
 
 function createPlayer() {
   return {
-    availableMoves: createMove(),
+    moves: ["rock", "paper", "scissors", "spock", "lizard"],
     currentMove: null,
     score: 0,
 
@@ -91,10 +91,8 @@ function createComputer() {
 
   let computerObject = {
     choose() {
-      let randomIndex = Math.floor(
-        Math.random() * this.availableMoves.moves.length
-      );
-      this.currentMove = this.availableMoves.moves[randomIndex];
+      let randomIndex = Math.floor(Math.random() * this.moves.length);
+      this.currentMove = this.moves[randomIndex];
     },
   };
 
@@ -109,10 +107,12 @@ function createHuman() {
       let choice;
       while (true) {
         console.log(
-          "Choose one of the following options: rock, paper, or scissors: "
+          `Choose one of the following options: ${this.moves
+            .slice(0, this.moves.length - 1)
+            .join(", ")}, or ${this.moves[this.moves.length - 1]}: `
         );
         choice = rlsync.question();
-        if (this.availableMoves.moves.includes(choice)) break;
+        if (this.moves.includes(choice)) break;
         console.log("Sorry, invalid choice");
       }
 
@@ -121,12 +121,6 @@ function createHuman() {
   };
 
   return Object.assign(playerObject, humanObject);
-}
-
-function createMove() {
-  return {
-    moves: ["rock", "paper", "scissors", "spock", "lizard"],
-  };
 }
 
 function createRules(human, computer) {
@@ -142,8 +136,20 @@ function createRules(human, computer) {
     },
 
     determineWinner() {
-      if(winningOutcomes[this.human.currentMove].includes(this.computer.currentMove)){
-        return 'human'
+      if (
+        this.winningOutcomes[this.human.currentMove].includes(
+          this.computer.currentMove
+        )
+      ) {
+        return "human";
+      } else if (
+        this.winningOutcomes[this.computer.currentMove].includes(
+          this.human.currentMove
+        )
+      ) {
+        return "computer";
+      } else {
+        return "tie";
       }
     },
   };
@@ -201,11 +207,13 @@ function createRPSGame() {
   const human = createHuman();
   const computer = createComputer();
   const score = createScore(human, computer);
+  const rules = createRules(human, computer);
 
   return {
     human: human,
     computer: computer,
     score: score,
+    rules: rules,
 
     displayWelcomeMessage() {
       console.log("Welcome to Rock, Paper, Scissors!");
@@ -215,46 +223,10 @@ function createRPSGame() {
       console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
     },
 
-    compare() {
-      if (
-        this.human.currentMove === "rock" &&
-        this.computer.currentMove === "scissors"
-      ) {
-        return "human";
-      } else if (
-        this.human.currentMove === "scissors" &&
-        this.computer.currentMove === "paper"
-      ) {
-        return "human";
-      } else if (
-        this.human.currentMove === "paper" &&
-        this.computer.currentMove === "rock"
-      ) {
-        return "human";
-      } else if (
-        this.computer.currentMove === "rock" &&
-        this.human.currentMove === "scissors"
-      ) {
-        return "computer";
-      } else if (
-        this.computer.currentMove === "scissors" &&
-        this.human.currentMove === "paper"
-      ) {
-        return "computer";
-      } else if (
-        this.computer.currentMove === "paper" &&
-        this.human.currentMove === "rock"
-      ) {
-        return "computer";
-      } else {
-        return "tie";
-      }
-    },
-
     displayWinner() {
       console.log(`You chose ${this.human.currentMove}`);
       console.log(`Computer chose ${this.computer.currentMove}`);
-      let winner = this.compare();
+      let winner = this.rules.determineWinner();
       if (winner === "tie") {
         console.log("Its a tie!");
       } else {
@@ -276,7 +248,7 @@ function createRPSGame() {
           this.human.choose();
           this.computer.choose();
           this.displayWinner();
-          this.score.addPoint(this.compare());
+          this.score.addPoint(this.rules.determineWinner());
           this.score.displayScore();
           if (this.score.pickRoundWinner() !== "no winner") break;
         }
