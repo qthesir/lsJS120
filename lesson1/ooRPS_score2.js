@@ -125,149 +125,170 @@ function createHuman() {
 
 function createMove() {
   return {
-    moves: ["rock", "paper", "scissors"],
+    moves: ["rock", "paper", "scissors", "spock", "lizard"],
   };
 }
 
-function createScore() {
+function createRules(human, computer) {
   return {
-    humanScore: 0,
-    computerScore: 0,
+    human,
+    computer,
+    winningOutcomes: {
+      rock: ["scissors", "lizard"],
+      paper: ["rock", "spock"],
+      scissors: ["paper", "lizard"],
+      spock: ["rock", "scissors"],
+      lizard: ["paper", "spock"],
+    },
 
-    incrementScore() {},
-
-    resetScore() {},
-
-    compareScore() {},
-
-    pickWinner() {},
-
-    displayScore() {},
-
-    displayGrandWinner() {},
+    determineWinner() {
+      if(winningOutcomes[this.human.currentMove].includes(this.computer.currentMove)){
+        return 'human'
+      }
+    },
   };
 }
 
-const RPSGame = {
-  human: createHuman(),
-  computer: createComputer(),
+function createScore(human, computer) {
+  return {
+    human,
+    computer,
 
-  displayWelcomeMessage() {
-    console.log("Welcome to Rock, Paper, Scissors!");
-  },
+    addPoint(winner) {
+      if (winner === "human") {
+        this.human.incrementScore();
+      } else if (winner === "computer") {
+        this.computer.incrementScore();
+      }
+    },
 
-  displayGoodbyeMessage() {
-    console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
-  },
-
-  compare() {
-    if (
-      this.human.currentMove === "rock" &&
-      this.computer.currentMove === "scissors"
-    ) {
-      return "human";
-    } else if (
-      this.human.currentMove === "scissors" &&
-      this.computer.currentMove === "paper"
-    ) {
-      return "human";
-    } else if (
-      this.human.currentMove === "paper" &&
-      this.computer.currentMove === "rock"
-    ) {
-      return "human";
-    } else if (
-      this.computer.currentMove === "rock" &&
-      this.human.currentMove === "scissors"
-    ) {
-      return "computer";
-    } else if (
-      this.computer.currentMove === "scissors" &&
-      this.human.currentMove === "paper"
-    ) {
-      return "computer";
-    } else if (
-      this.computer.currentMove === "paper" &&
-      this.human.currentMove === "rock"
-    ) {
-      return "computer";
-    } else {
-      return "tie";
-    }
-  },
-
-  displayWinner() {
-    console.log(`You chose ${this.human.currentMove}`);
-    console.log(`Computer chose ${this.computer.currentMove}`);
-    let winner = this.compare();
-    if (winner === "tie") {
-      console.log("Its a tie!");
-    } else {
-      console.log("human" === winner ? "You win!" : "Computer wins!");
-    }
-  },
-
-  updateScore() {
-    if (this.compare() === "human") {
-      this.human.incrementScore();
-    } else if (this.compare() === "computer") {
-      this.computer.incrementScore();
-    }
-  },
-
-  displayScore() {
-    console.log(
-      `Your score: ${this.human.score}\nComputer's Score: ${this.computer.score} `
-    );
-  },
-
-  pickGrandWinner() {
-    if (this.human.score >= 5) {
-      return "human";
-    } else if (this.computer.score >= 5) {
-      return "computer";
-    } else {
-      return "no winner";
-    }
-  },
-
-  displayGrandWinner() {
-    console.log("------Final Score-------");
-    console.log(`You: ${this.human.score}`);
-    console.log(`Computer: ${this.computer.score}`);
-    console.log("------------------------");
-    if (this.pickGrandWinner() === "human") {
-      console.log("Congratulations! You're the reining champion!");
-    } else if (this.pickGrandWinner() === "computer") {
-      console.log("Computer is the reining champion!");
-    }
-  },
-
-  playAgain() {
-    console.log("Would you like to play again? (y/n)");
-    let answer = rlsync.question();
-    return answer.toLowerCase()[0] === "y";
-  },
-
-  play() {
-    this.displayWelcomeMessage();
-    while (true) {
+    resetScores() {
       this.human.resetScore();
       this.computer.resetScore();
-      while (true) {
-        this.human.choose();
-        this.computer.choose();
-        this.displayWinner();
-        this.updateScore();
-        this.displayScore();
-        if (this.pickGrandWinner() !== "no winner") break;
+    },
+
+    pickRoundWinner() {
+      if (this.human.score >= 5) {
+        return "human";
+      } else if (this.computer.score >= 5) {
+        return "computer";
+      } else {
+        return "no winner";
       }
-      this.displayGrandWinner();
-      if (!this.playAgain()) break;
-    }
-    this.displayGoodbyeMessage();
-  },
-};
+    },
+
+    displayScore() {
+      console.log(
+        `Your score: ${this.human.score}\nComputer's Score: ${this.computer.score}`
+      );
+    },
+
+    displayGrandWinner() {
+      console.log("------Final Score-------");
+      console.log(`You: ${this.human.score}`);
+      console.log(`Computer: ${this.computer.score}`);
+      console.log("------------------------");
+      if (this.pickRoundWinner() === "human") {
+        console.log("Congratulations! You're the reining champion!");
+      } else if (this.pickRoundWinner() === "computer") {
+        console.log("Computer is the reining champion!");
+      }
+    },
+  };
+}
+
+function createRPSGame() {
+  const human = createHuman();
+  const computer = createComputer();
+  const score = createScore(human, computer);
+
+  return {
+    human: human,
+    computer: computer,
+    score: score,
+
+    displayWelcomeMessage() {
+      console.log("Welcome to Rock, Paper, Scissors!");
+    },
+
+    displayGoodbyeMessage() {
+      console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
+    },
+
+    compare() {
+      if (
+        this.human.currentMove === "rock" &&
+        this.computer.currentMove === "scissors"
+      ) {
+        return "human";
+      } else if (
+        this.human.currentMove === "scissors" &&
+        this.computer.currentMove === "paper"
+      ) {
+        return "human";
+      } else if (
+        this.human.currentMove === "paper" &&
+        this.computer.currentMove === "rock"
+      ) {
+        return "human";
+      } else if (
+        this.computer.currentMove === "rock" &&
+        this.human.currentMove === "scissors"
+      ) {
+        return "computer";
+      } else if (
+        this.computer.currentMove === "scissors" &&
+        this.human.currentMove === "paper"
+      ) {
+        return "computer";
+      } else if (
+        this.computer.currentMove === "paper" &&
+        this.human.currentMove === "rock"
+      ) {
+        return "computer";
+      } else {
+        return "tie";
+      }
+    },
+
+    displayWinner() {
+      console.log(`You chose ${this.human.currentMove}`);
+      console.log(`Computer chose ${this.computer.currentMove}`);
+      let winner = this.compare();
+      if (winner === "tie") {
+        console.log("Its a tie!");
+      } else {
+        console.log("human" === winner ? "You win!" : "Computer wins!");
+      }
+    },
+
+    playAgain() {
+      console.log("Would you like to play again? (y/n)");
+      let answer = rlsync.question();
+      return answer.toLowerCase()[0] === "y";
+    },
+
+    play() {
+      this.displayWelcomeMessage();
+      while (true) {
+        this.score.resetScores();
+        while (true) {
+          this.human.choose();
+          this.computer.choose();
+          this.displayWinner();
+          this.score.addPoint(this.compare());
+          this.score.displayScore();
+          if (this.score.pickRoundWinner() !== "no winner") break;
+        }
+        this.score.displayGrandWinner();
+        if (!this.playAgain()) break;
+      }
+      this.displayGoodbyeMessage();
+    },
+  };
+}
+
+RPSGame = createRPSGame();
 
 RPSGame.play();
 
@@ -287,5 +308,16 @@ Options so far:
 - Score on the player object, with a separate function on the RPSGame
 - Score as an object, that contained the two players scores, and a function to check whether one of the scores has reached
 5 and which one. 
+
+Looking at the two main options: Associating the score with the player feels more intuitive, since
+that is, in fact, the players score. However, it does force you to add more logic into the
+application engine compared to managing the score entirely in its own object. If the 
+score is in its own object, then you can increment, reset, compare, and pick a winner, all 
+in the same object. This keeps things pretty tidy. 
+
+Oof, but, upon implementation, the updating the score gets pretty messy... it looks like
+I'd have to update the score in an outside function anyway, depending on who won. 
+
+
 
 */
