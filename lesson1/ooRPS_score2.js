@@ -70,9 +70,9 @@ kind of hard to describe!
 
 const rlsync = require("readline-sync");
 
-function createPlayer() {
+function createPlayer(moves) {
   return {
-    moves: ["rock", "paper", "scissors", "spock", "lizard"],
+    moves,
     currentMove: null,
     score: 0,
 
@@ -86,37 +86,43 @@ function createPlayer() {
   };
 }
 
-function createComputer() {
-  let playerObject = createPlayer();
+function createComputer(moves) {
+  let playerObject = createPlayer(moves);
 
   let computerObject = {
     choose() {
-      let randomIndex = Math.floor(Math.random() * this.moves.length);
-      this.currentMove = this.moves[randomIndex];
+      let randomIndex = Math.floor(
+        Math.random() * this.moves.availableMoves.length
+      );
+      this.currentMove = this.moves.availableMoves[randomIndex];
+      this.moves.updateMoves("computer", this.currentMove);
     },
   };
 
   return Object.assign(playerObject, computerObject);
 }
 
-function createHuman() {
-  let playerObject = createPlayer();
+function createHuman(moves) {
+  let playerObject = createPlayer(moves);
 
   let humanObject = {
     choose() {
       let choice;
       while (true) {
         console.log(
-          `Choose one of the following options: ${this.moves
-            .slice(0, this.moves.length - 1)
-            .join(", ")}, or ${this.moves[this.moves.length - 1]}: `
+          `Choose one of the following options: ${this.moves.availableMoves
+            .slice(0, this.moves.availableMoves.length - 1)
+            .join(", ")}, or ${
+            this.moves.availableMoves[this.moves.availableMoves.length - 1]
+          }: `
         );
         choice = rlsync.question();
-        if (this.moves.includes(choice)) break;
+        if (this.moves.availableMoves.includes(choice)) break;
         console.log("Sorry, invalid choice");
       }
 
       this.currentMove = choice;
+      this.moves.updateMoves("human", this.currentMove);
     },
   };
 
@@ -125,23 +131,33 @@ function createHuman() {
 
 function createMoves() {
   return {
-    moves: ["rock", "paper", "scissors", "spock", "lizard"],
-    historicalMoves: { human: [], computer: [] },
+    availableMoves: ["rock", "paper", "scissors", "spock", "lizard"],
+    moveHistory: { human: [], computer: [] },
 
     updateMoves(player, currentMove) {
       if (player === "human") {
-        this.historicalMoves.human.push(currentMove);
+        this.moveHistory.human.push(currentMove);
       } else if (player === "computer") {
-        this.historicalMoves.computer.push(currentMove);
+        this.moveHistory.computer.push(currentMove);
       }
     },
 
     resetMoves() {
-      this.historicalMoves.human = [];
-      this.historicalMoves.computer = [];
+      this.moveHistory.human = [];
+      this.moveHistory.computer = [];
     },
 
-    displayMoves() {},
+    displayMoves() {
+      console.log(`          | Human | Computer`);
+      console.log('----------|-------|---------')
+      this.moveHistory.human.forEach((_, index) => {
+        console.log(
+          `Round ${index + 1}:  | ${this.moveHistory.human[index]}  |  ${
+            this.moveHistory.computer[index]
+          }`
+        );
+      });
+    },
   };
 }
 
@@ -226,12 +242,14 @@ function createScore(human, computer) {
 }
 
 function createRPSGame() {
-  const human = createHuman();
-  const computer = createComputer();
+  const moves = createMoves();
+  const human = createHuman(moves);
+  const computer = createComputer(moves);
   const score = createScore(human, computer);
   const rules = createRules(human, computer);
 
   return {
+    moves: moves,
     human: human,
     computer: computer,
     score: score,
@@ -266,12 +284,14 @@ function createRPSGame() {
       this.displayWelcomeMessage();
       while (true) {
         this.score.resetScores();
+        this.moves.resetMoves();
         while (true) {
           this.human.choose();
           this.computer.choose();
           this.displayWinner();
           this.score.addPoint(this.rules.determineWinner());
           this.score.displayScore();
+          this.moves.displayMoves();
           if (this.score.pickRoundWinner() !== "no winner") break;
         }
         this.score.displayGrandWinner();
