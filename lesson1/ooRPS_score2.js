@@ -148,13 +148,20 @@ function createMoves() {
     },
 
     displayMoves() {
-      console.log(`          | Human | Computer`);
-      console.log('----------|-------|---------')
+      function addPadding(str) {
+        let paddedStr = str;
+        while (paddedStr.length < 7) {
+          paddedStr = paddedStr + " ";
+        }
+        return paddedStr;
+      }
+      console.log(`          |  Human  | Computer`);
+      console.log("----------|---------|---------");
       this.moveHistory.human.forEach((_, index) => {
         console.log(
-          `Round ${index + 1}:  | ${this.moveHistory.human[index]}  |  ${
-            this.moveHistory.computer[index]
-          }`
+          `Round ${index + 1}:  |  ${addPadding(
+            this.moveHistory.human[index]
+          )}|  ${this.moveHistory.computer[index]}`
         );
       });
     },
