@@ -295,8 +295,8 @@ function createRPSGame() {
         while (true) {
           this.human.choose();
           this.computer.choose();
-          this.displayWinner();
           this.score.addPoint(this.rules.determineWinner());
+          this.displayWinner();
           this.score.displayScore();
           this.moves.displayMoves();
           if (this.score.pickRoundWinner() !== "no winner") break;
