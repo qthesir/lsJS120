@@ -132,7 +132,7 @@ function createHuman(moves) {
 function createMoves() {
   return {
     availableMoves: ["rock", "paper", "scissors", "spock", "lizard"],
-    moveHistory: { human: [], computer: [] },
+    moveHistory: { human: [], computer: [], winner: [] },
 
     updateMoves(player, currentMove) {
       if (player === "human") {
@@ -142,26 +142,39 @@ function createMoves() {
       }
     },
 
+    updateWinner(winner) {
+      if (winner === "human") {
+        this.moveHistory.winner.push("human");
+      } else if (winner === "computer") {
+        this.moveHistory.winner.push("computer");
+      } else if (winner === "tie") {
+        this.moveHistory.winner.push("tie");
+      }
+    },
+
     resetMoves() {
       this.moveHistory.human = [];
       this.moveHistory.computer = [];
     },
 
     displayMoves() {
-      function addPadding(str) {
+      function addPadding(str, standardLength) {
         let paddedStr = str;
-        while (paddedStr.length < 7) {
+        while (paddedStr.length < standardLength) {
           paddedStr = paddedStr + " ";
         }
         return paddedStr;
       }
-      console.log(`          |  Human  | Computer`);
-      console.log("----------|---------|---------");
+      console.log(`           |  Human   | Computer | Winner  `);
+      console.log("-----------|----------|----------|---------");
       this.moveHistory.human.forEach((_, index) => {
         console.log(
-          `Round ${index + 1}:  |  ${addPadding(
-            this.moveHistory.human[index]
-          )}|  ${this.moveHistory.computer[index]}`
+          `Round ${addPadding(String(index + 1) + ":", 3)}  |  ${addPadding(
+            this.moveHistory.human[index],
+            8
+          )}|  ${addPadding(this.moveHistory.computer[index], 8)}|  ${
+            this.moveHistory.winner[index]
+          }`
         );
       });
     },
@@ -270,10 +283,9 @@ function createRPSGame() {
       console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
     },
 
-    displayWinner() {
+    displayWinner(winner) {
       console.log(`You chose ${this.human.currentMove}`);
       console.log(`Computer chose ${this.computer.currentMove}`);
-      let winner = this.rules.determineWinner();
       if (winner === "tie") {
         console.log("Its a tie!");
       } else {
@@ -291,12 +303,15 @@ function createRPSGame() {
       this.displayWelcomeMessage();
       while (true) {
         this.score.resetScores();
-        this.moves.resetMoves();
         while (true) {
           this.human.choose();
           this.computer.choose();
-          this.score.addPoint(this.rules.determineWinner());
-          this.displayWinner();
+
+          let winner = this.rules.determineWinner();
+          this.score.addPoint(winner);
+          this.moves.updateWinner(winner);
+
+          this.displayWinner(winner);
           this.score.displayScore();
           this.moves.displayMoves();
           if (this.score.pickRoundWinner() !== "no winner") break;
