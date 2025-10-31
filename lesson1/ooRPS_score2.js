@@ -392,5 +392,32 @@ Notes
 
 I could do this one of several ways: The first way that I could do it is have the rule fire. Have a 
 switch statement which contains the conditions for each rule. if the condition returns true, then you 
-execute the logic 
+execute the logic. If it doesn't, then don't execute the logic. You could encapsulate all of this into 
+a function called "updateStrategy", which both finds the rule and then updates the weights according to
+the rule triggered.
+
+Maybe I should try to let doing this in a sophisticated way go. Its just an exercise, there is no benefit,
+the evolutionarily stable strategy is to just choose a random move. 
+
+Update Strategy
+  - Runs after the winner is determined and history is updated
+  - Uses the most recent moves / winner in the move history to update the analysis
+  - With the Analysis, update the weights
+
+So its:
+
+Properties:
+- historicalMoves
+- Analysis
+- Weights
+- Rules? 
+
+Methods:
+  Update Strategy
+    - Update Analysis
+    - Update Weights
+      - According to a rule, which is on another object
+
+Then, as a component of choosing a move, I will choose the move based on the weights, instead of a 
+random index. 
 */
