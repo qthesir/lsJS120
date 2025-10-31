@@ -95,7 +95,6 @@ function createComputer(moves) {
         Math.random() * this.moves.availableMoves.length
       );
       this.currentMove = this.moves.availableMoves[randomIndex];
-      this.moves.updateMoves("computer", this.currentMove);
     },
   };
 
@@ -122,7 +121,6 @@ function createHuman(moves) {
       }
 
       this.currentMove = choice;
-      this.moves.updateMoves("human", this.currentMove);
     },
   };
 
@@ -132,24 +130,15 @@ function createHuman(moves) {
 function createMoves() {
   return {
     availableMoves: ["rock", "paper", "scissors", "spock", "lizard"],
-    moveHistory: { human: [], computer: [], winner: [] },
+    moveHistory: [],
 
-    updateMoves(player, currentMove) {
-      if (player === "human") {
-        this.moveHistory.human.push(currentMove);
-      } else if (player === "computer") {
-        this.moveHistory.computer.push(currentMove);
-      }
-    },
-
-    updateWinner(winner) {
-      if (winner === "human") {
-        this.moveHistory.winner.push("human");
-      } else if (winner === "computer") {
-        this.moveHistory.winner.push("computer");
-      } else if (winner === "tie") {
-        this.moveHistory.winner.push("tie");
-      }
+    updateMoveHistory(human, computer, winner) {
+      let movesThisRound = {
+        human: human.currentMove,
+        computer: computer.currentMove,
+        winner: winner,
+      };
+      this.moveHistory.push(movesThisRound);
     },
 
     resetMoves() {
@@ -167,14 +156,12 @@ function createMoves() {
       }
       console.log(`           |  Human   | Computer | Winner  `);
       console.log("-----------|----------|----------|---------");
-      this.moveHistory.human.forEach((_, index) => {
+      this.moveHistory.forEach(({ computer, human, winner }, index) => {
         console.log(
           `Round ${addPadding(String(index + 1) + ":", 3)}  |  ${addPadding(
-            this.moveHistory.human[index],
+            human,
             8
-          )}|  ${addPadding(this.moveHistory.computer[index], 8)}|  ${
-            this.moveHistory.winner[index]
-          }`
+          )}|  ${addPadding(computer, 8)}|  ${winner}`
         );
       });
     },
@@ -309,7 +296,7 @@ function createRPSGame() {
 
           let winner = this.rules.determineWinner();
           this.score.addPoint(winner);
-          this.moves.updateWinner(winner);
+          this.moves.updateMoveHistory(human, computer, winner);
 
           this.displayWinner(winner);
           this.score.displayScore();
@@ -371,12 +358,26 @@ New Methods (on computer object):
     - Update Analysis
     - Update Weights
       - According to a rule, which is on another object (maybe)
+      - Decrement weight (accepts the move to decrement and the amount, in percentage)
 
+PEDAC: Update Analysis
 
+Problem
+Accept an array historicalMoves that contains an object at each index with 3 properties - human, computer, 
+and winner - which contain arrays of
+their historical moves and the outcome. The function should return an object which contains 5 properties,
+one for each of the 5 moves, and a tuple, which contains a tuple with the win outcomes for the human and 
+computer, respectively, for a given move. The array lengths for human, computer, and winner will always
+be the same, and the array index x in all of the properties are related to the same round. 
 
-PEDAC: Historical Moves
+// Examples 
+Input: []
+Output: { rock: [0, 100], paper: [100, 0] }
 
+Input: {human: [], computer: [], winner: []} 
+Output: {}
 
+Input: {}
 */
 
 /*
@@ -412,6 +413,15 @@ New Methods (on computer object):
 
 Then, as a component of choosing a move, I will choose the move based on the weights, instead of a 
 random index. 
+
+Hmmmm. But what of multiple rules? Well, I could fire each rule sequentially. First rule that triggers,
+make the weight adjustment. Second rule that triggers, make another adjustment. But you'd want to keep
+the relative weights the same. So any adjustment to a given weight would need to be evenly distributed to
+the other weights. Which is actually relatively simple, now that I'm thinking through it more clearly. 
+
+In absence of a historical presence for that move, the should outcome default to 50 / 50? Or should I 
+just leave it blank, and not check it for rule evaluation? Gut says latter. This is an easy thing to change
+later. 
 
 ****Archive***** 
 
