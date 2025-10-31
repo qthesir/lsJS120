@@ -364,20 +364,32 @@ PEDAC: Update Analysis
 
 Problem
 Accept an array historicalMoves that contains an object at each index with 3 properties - human, computer, 
-and winner - which contain arrays of
-their historical moves and the outcome. The function should return an object which contains 5 properties,
+and winner - with the human property containing the humans move at that round, computer containing the computers property, and the winner containing the winner of the round. 
+The function should return an object which contains 5 properties,
 one for each of the 5 moves, and a tuple, which contains a tuple with the win outcomes for the human and 
 computer, respectively, for a given move. The array lengths for human, computer, and winner will always
-be the same, and the array index x in all of the properties are related to the same round. 
+be the same, and the array index x in all of the properties are related to the same round. If the move has
+not been performed yet, it should not have a property on the array
 
 // Examples 
-Input: []
+Input: [{human: 'rock', computer: 'paper', winner: 'computer'}, 
+{human: 'paper', computer: 'rock', winner: 'human'}]
+
 Output: { rock: [0, 100], paper: [100, 0] }
 
-Input: {human: [], computer: [], winner: []} 
+Input: []
 Output: {}
 
-Input: {}
+Input: [{human: 'scissors', computer: 'paper', winner: 'human'}, 
+{human: 'paper', computer: 'rock', winner: 'human'},
+{human: 'paper', computer 'lizard', winner: 'computer'}]
+
+output: { scissors: [], paper: [], }
+
+Shoot... What do I do if the computer has made a move, but the human hasn't? Maybe two different objects,
+one for the computer, and one for the human, would be more appropriate? 
+
+
 */
 
 /*
