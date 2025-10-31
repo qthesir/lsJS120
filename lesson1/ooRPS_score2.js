@@ -355,5 +355,42 @@ Oof, but, upon implementation, the updating the score gets pretty messy... it lo
 I'd have to update the score in an outside function anyway, depending on who won. 
 
 
+*/
 
+/*
+PEDAC: Historical Moves
+
+Problem
+What I need to do, is use a list of historical data to update the probability weighting 
+of each move for the computer, and then make a move based on the weighting. This splits into
+two main functions:
+
+1. Apply rule and update probability weightings for each move accordingly
+2. Make a move based on the weighting (update choose()). This is the easy part. 
+
+The weights will be stored in state on the computer object. The rules, also no the 
+computer object (as "strategies"). Rules should be checked every round. If a rule applies,
+then the computer will update the weighting accordingly. 
+
+The principle thing being acted on is a weight - so there could conceivably be a general option
+for any rule. But, lets keep it simple and just write rules for the first function.
+
+- If the computer loses after playing a certain move, reduce the probability of making that move again 
+by 50%
+- If the computer wins after playing a certain move, increase the probability of making that move again 
+by 50%
+
+Problem
+Write a function that takes a set of rules; an object with a history of moves for the computer,
+human, and the outcome of the round; and returns updated weights 
+
+
+*/
+
+/*
+Notes
+
+I could do this one of several ways: The first way that I could do it is have the rule fire. Have a 
+switch statement which contains the conditions for each rule. if the condition returns true, then you 
+execute the logic 
 */
