@@ -90,11 +90,89 @@ function createComputer(moves) {
   let playerObject = createPlayer(moves);
 
   let computerObject = {
+    winRatios: {
+      humanWinRate: {},
+      computerWinRate: {},
+    },
+    moveWeights: { rock: 20, paper: 20, scissors: 20, spock: 20, lizard: 20 },
+
     choose() {
-      let randomIndex = Math.floor(
-        Math.random() * this.moves.availableMoves.length
+      function selectNextMove(moveWeights) {
+        let randomValue = Math.random() * 100;
+        let prevValue = 0;
+        let currentValue = 0;
+        for (const move of Object.keys(moveWeights)) {
+          currentValue += moveWeights[move];
+          if (prevValue <= randomValue && randomValue < currentValue) {
+            return move;
+          }
+          prevValue = currentValue;
+        }
+      }
+
+      this.currentMove = selectNextMove(this.moveWeights);
+    },
+
+    updateWinRatios() {
+      function getPlayerWinRatio(moveHistoryNoTies, move, player) {
+        let totalMoves = 0;
+        let winningMoves = 0;
+        for (const round of moveHistoryNoTies) {
+          if (round[player] === move) totalMoves++;
+          if (round[player] === move && round.winner === player) winningMoves++;
+        }
+
+        if (totalMoves === 0) return undefined;
+
+        return (winningMoves / totalMoves) * 100;
+      }
+
+      let moveHistoryNoTies = this.moves.moveHistory.filter(
+        (round) => round.winner !== "tie"
       );
-      this.currentMove = this.moves.availableMoves[randomIndex];
+
+      this.moves.availableMoves.forEach((move) => {
+        let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
+        let winRatioComputer = getPlayerWinRatio(
+          moveHistoryNoTies,
+          move,
+          "computer"
+        );
+        if (winRatioHuman !== undefined)
+          this.winRatios["humanWinRate"][move] = winRatioHuman;
+        if (winRatioComputer !== undefined)
+          this.winRatios["computerWinRate"][move] = winRatioComputer;
+      });
+
+      return undefined;
+    },
+
+    updateWeights(moveToUpdate, percentChange) {
+      let netChange = this.moveWeights[moveToUpdate] * (percentChange / 100);
+      if (
+        this.moveWeights[moveToUpdate] + netChange >= 50 ||
+        this.moveWeights[moveToUpdate] + netChange <= 5
+      )
+        return undefined;
+      this.moveWeights[moveToUpdate] =
+        this.moveWeights[moveToUpdate] + netChange;
+      for (const move of Object.keys(this.moveWeights)) {
+        if (move !== moveToUpdate) {
+          this.moveWeights[move] = this.moveWeights[move] - netChange / 4;
+        }
+      }
+
+      return undefined;
+    },
+
+    updateComputerStrategy() {
+      this.updateWinRatios();
+      if (this.winRatios.computerWinRate["rock"] > 60) {
+        this.updateWeights("rock", 50);
+      }
+      if (this.winRatios.computerWinRate["rock"] < 40) {
+        this.updateWeights("rock", -50);
+      }
     },
   };
 
@@ -291,6 +369,9 @@ function createRPSGame() {
       while (true) {
         this.score.resetScores();
         while (true) {
+          console.log(this.computer);
+          this.computer.updateComputerStrategy();
+          console.log(this.computer);
           this.human.choose();
           this.computer.choose();
 
@@ -313,7 +394,7 @@ function createRPSGame() {
 
 RPSGame = createRPSGame();
 
-// RPSGame.play();
+RPSGame.play();
 
 /*
 Notes and reflection
@@ -453,55 +534,55 @@ Step by Step
 
 */
 
-let moveHistory = [
-  { human: "rock", computer: "paper", winner: "computer" },
-  { human: "paper", computer: "rock", winner: "human" },
-  { human: "scissors", computer: "scissors", winner: "tie" },
-];
-let availableMoves = ["rock", "paper", "scissors", "spock", "lizard"];
-let output = {
-  humanWinRate: { rock: 0, paper: 100 },
-  computerWinRate: { rock: 0, paper: 100 },
-};
+// let moveHistory = [
+//   { human: "rock", computer: "paper", winner: "computer" },
+//   { human: "paper", computer: "rock", winner: "human" },
+//   { human: "scissors", computer: "scissors", winner: "tie" },
+// ];
+// let availableMoves = ["rock", "paper", "scissors", "spock", "lizard"];
+// let output = {
+//   humanWinRate: { rock: 0, paper: 100 },
+//   computerWinRate: { rock: 0, paper: 100 },
+// };
 
-function getWinRatios(moveHistory, availableMoves) {
-  function getPlayerWinRatio(moveHistoryNoTies, move, player) {
-    let totalMoves = 0;
-    let winningMoves = 0;
-    for (round of moveHistoryNoTies) {
-      if (round[player] === move) totalMoves++;
-      if (round[player] === move && round.winner === player) winningMoves++;
-    }
+// function getWinRatios(moveHistory, availableMoves) {
+//   function getPlayerWinRatio(moveHistoryNoTies, move, player) {
+//     let totalMoves = 0;
+//     let winningMoves = 0;
+//     for (round of moveHistoryNoTies) {
+//       if (round[player] === move) totalMoves++;
+//       if (round[player] === move && round.winner === player) winningMoves++;
+//     }
 
-    if (totalMoves === 0) return undefined;
+//     if (totalMoves === 0) return undefined;
 
-    return (winningMoves / totalMoves) * 100;
-  }
+//     return (winningMoves / totalMoves) * 100;
+//   }
 
-  let winRates = {
-    humanWinRate: {},
-    computerWinRate: {},
-  };
+//   let winRates = {
+//     humanWinRate: {},
+//     computerWinRate: {},
+//   };
 
-  let moveHistoryNoTies = moveHistory.filter((round) => round.winner !== "tie");
+//   let moveHistoryNoTies = moveHistory.filter((round) => round.winner !== "tie");
 
-  availableMoves.forEach((move) => {
-    let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
-    let winRatioComputer = getPlayerWinRatio(
-      moveHistoryNoTies,
-      move,
-      "computer"
-    );
-    if (winRatioHuman !== undefined)
-      winRates["humanWinRate"][move] = winRatioHuman;
-    if (winRatioComputer !== undefined)
-      winRates["computerWinRate"][move] = winRatioComputer;
-  });
+//   availableMoves.forEach((move) => {
+//     let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
+//     let winRatioComputer = getPlayerWinRatio(
+//       moveHistoryNoTies,
+//       move,
+//       "computer"
+//     );
+//     if (winRatioHuman !== undefined)
+//       winRates["humanWinRate"][move] = winRatioHuman;
+//     if (winRatioComputer !== undefined)
+//       winRates["computerWinRate"][move] = winRatioComputer;
+//   });
 
-  return winRates;
-}
+//   return winRates;
+// }
 
-console.log(getWinRatios(moveHistory, availableMoves));
+// console.log(getWinRatios(moveHistory, availableMoves));
 
 /*
 Update Weights
@@ -512,9 +593,63 @@ According to the analysis produced in the previous function, update the weights 
 The weights should always sum to 100. The function should accept three arguments: The current set of weights, the move to modify, 
 and a percentage to change (positive or negative). If it is negative, it should decrease the weighting for that move. 
 If it is positive, it should increase. The difference between the current weighting and the new weighting should be evenly 
-distributed to the other weights, such that the weights sum to 100. 
+distributed to the other weights, such that the weights sum to 100. Weights will always be at least the default, as shown 
+above, and will never be empty or without those specific 5 moves. 
 
+PEDAC 
+Problem
+Write a function that accepts a set of weights, a move to modify, and a percentage to change as an argument. Decrement the 
+move passed in as an argument, and re-distribute the difference to the other weights in the object equally. This function
+should mutate the set of weights passed in as an argument, and does not need to return a new array. 
+
+Examples / Test Cases
+Input: {rock: 20, paper: 20, scissors: 20, spock: 20, lizard: 20}, paper, 50
+Side Effect: mutate weights to: {rock: 17.5, paper: 30, scissors: 17.5, spock: 17.5, lizard: 17.5}
+Output: undefined
+
+Requirements
+- Accept a set of weights, moves to modify, and a percentage to change the move as arguments
+- Mutate the set of weights 
+- Percentage inputs should be in whole numbers
+- The move should be one of 5 moves: ['rock', 'paper', 'scissors', 'spock', 'lizard']
+- The weights will always have the 5 moves, with a default of 20, and will always sum to 100
+
+Data Structures
+Intermediate: Thinking I can first calculate the difference to reduce / increase by multiplying the current weight
+by the input value / 100. I can take that difference and apply it directly to the weight in question, then iterate over
+the remaining weights and subtract (inverse of add) that value / 4 to each of them. That should do it, for the function, as 
+this object will be a mutation
+
+Algorithm 
+Step By Step
+- Accept weights, move, and percentChange as arguments
+- SET netChange = weights[move] * (percentChage / 100)
+- SET weights[move] = weights[move] + netChange
+- For all moves other than move in weights:
+  - SET weights[moveOtherThanArg] = weights[moveOtherThanArg] - netChange / 4
+- Return undefined
+
+Aside: These weights will drift over time without controlling the floating points. 
 */
+
+// let weights = { rock: 20, paper: 20, scissors: 20, spock: 20, lizard: 20 };
+// let move = "paper";
+// let percentChange = -50;
+
+// function updateWeights(weights, moveToUpdate, percentChange) {
+//   let netChange = weights[moveToUpdate] * (percentChange / 100);
+//   weights[moveToUpdate] = weights[moveToUpdate] + netChange;
+//   for (move of Object.keys(weights)) {
+//     if (move !== moveToUpdate) {
+//       weights[move] = weights[move] - netChange / 4;
+//     }
+//   }
+// }
+
+// console.log(weights);
+// updateWeights(weights, move, percentChange);
+// console.log(weights); // Expected: {rock: 17.5, paper: 30, scissors: 17.5, spock: 17.5, lizard: 17.5}
+
 /*
 Notes
 
