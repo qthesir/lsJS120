@@ -461,36 +461,51 @@ let moveHistory = [
 let availableMoves = ["rock", "paper", "scissors", "spock", "lizard"];
 let output = {
   humanWinRate: { rock: 0, paper: 100 },
-  computerWinRate: { rock: 100, paper: 0 },
+  computerWinRate: { rock: 0, paper: 100 },
 };
 
-function getWinRates(moveHistory, availableMoves) {
+function getPlayerWinRatio(moveHistoryNoTies, move, player) {
+  let totalMoves = moveHistoryNoTies.filter(
+    (round) => round[player] === move
+  ).length;
+  if (totalMoves === 0) return undefined;
+
+  let winningMoves = moveHistoryNoTies.filter(
+    (round) => round[player] === move && round.winner === player
+  ).length;
+
+  return (winningMoves / totalMoves) * 100;
+}
+
+function getWinRatios(moveHistory, availableMoves) {
   let winRates = {
     humanWinRate: {},
     computerWinRate: {},
   };
   let moveHistoryNoTies = moveHistory.filter((round) => round.winner !== "tie");
+
   availableMoves.forEach((move) => {
-    let totalMoves = moveHistoryNoTies.filter(
-      (round) => round.human === move
-    ).length;
-    let winningMovesHuman = moveHistoryNoTies.filter(
-      (round) => round.human === move && round.winner === "human"
-    ).length;
-    let winningMovesComputer = moveHistoryNoTies.filter(
-      (round) => round.human === move && round.winner === "computer"
-    ).length;
-    let winRatioHuman = (winningMovesHuman / totalMoves) * 100;
-    let winRatioComputer = (winningMovesComputer / totalMoves) * 100;
-    winRates["humanWinRate"][move] = winRatioHuman;
-    winRates["computerWinRate"][move] = winRatioComputer;
+    let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
+    let winRatioComputer = getPlayerWinRatio(
+      moveHistoryNoTies,
+      move,
+      "computer"
+    );
+    if (winRatioHuman !== undefined)
+      winRates["humanWinRate"][move] = winRatioHuman;
+    if (winRatioComputer !== undefined)
+      winRates["computerWinRate"][move] = winRatioComputer;
   });
 
-  return winRates
+  return winRates;
 }
 
-console.log(getWinRates(moveHistory, availableMoves));
+console.log(getWinRatios(moveHistory, availableMoves));
 
+/*
+
+
+*/
 /*
 Notes
 
