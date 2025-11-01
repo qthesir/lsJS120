@@ -505,7 +505,14 @@ console.log(getWinRatios(moveHistory, availableMoves));
 
 /*
 Update Weights
-According to the analysis produced in the previous function, 
+According to the analysis produced in the previous function, update the weights for the computers moves. 
+
+{rock: 20, paper: 20, scissors: 20, spock: 20, lizard: 20}
+
+The weights should always sum to 100. The function should accept three arguments: The current set of weights, the move to modify, 
+and a percentage to change (positive or negative). If it is negative, it should decrease the weighting for that move. 
+If it is positive, it should increase. The difference between the current weighting and the new weighting should be evenly 
+distributed to the other weights, such that the weights sum to 100. 
 
 */
 /*
