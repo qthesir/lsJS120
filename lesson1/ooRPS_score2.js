@@ -464,24 +464,25 @@ let output = {
   computerWinRate: { rock: 0, paper: 100 },
 };
 
-function getPlayerWinRatio(moveHistoryNoTies, move, player) {
-  let totalMoves = moveHistoryNoTies.filter(
-    (round) => round[player] === move
-  ).length;
-  if (totalMoves === 0) return undefined;
-
-  let winningMoves = moveHistoryNoTies.filter(
-    (round) => round[player] === move && round.winner === player
-  ).length;
-
-  return (winningMoves / totalMoves) * 100;
-}
-
 function getWinRatios(moveHistory, availableMoves) {
+  function getPlayerWinRatio(moveHistoryNoTies, move, player) {
+    let totalMoves = 0;
+    let winningMoves = 0;
+    for (round of moveHistoryNoTies) {
+      if (round[player] === move) totalMoves++;
+      if (round[player] === move && round.winner === player) winningMoves++;
+    }
+
+    if (totalMoves === 0) return undefined;
+
+    return (winningMoves / totalMoves) * 100;
+  }
+
   let winRates = {
     humanWinRate: {},
     computerWinRate: {},
   };
+
   let moveHistoryNoTies = moveHistory.filter((round) => round.winner !== "tie");
 
   availableMoves.forEach((move) => {
@@ -503,7 +504,8 @@ function getWinRatios(moveHistory, availableMoves) {
 console.log(getWinRatios(moveHistory, availableMoves));
 
 /*
-
+Update Weights
+According to the analysis produced in the previous function, 
 
 */
 /*
