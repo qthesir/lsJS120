@@ -313,7 +313,7 @@ function createRPSGame() {
 
 RPSGame = createRPSGame();
 
-RPSGame.play();
+// RPSGame.play();
 
 /*
 Notes and reflection
@@ -376,7 +376,7 @@ win or loss.
 Input: [{human: 'rock', computer: 'paper', winner: 'computer'}, 
 {human: 'paper', computer: 'rock', winner: 'human'}]
 
-Output: { rock: [0, 100], paper: [100, 0] }
+Output:
   humanWinRate: {rock: 0, paper: 100}
   computerWinRate: {rock: 100, paper: 0}
 
@@ -394,7 +394,7 @@ Output:
   computerWinRate {paper: 0, rock: 0, lizard: 100}
 
 Input: [{human: 'scissors', computer: 'scissors', winner: 'tie'}, 
-{human: 'paper', computer: 'rock', winner: 'human'},
+{human: 'paper', computer: 'rock', winner: 'human'}]
 Output:
   humanWinRate: {paper: 100}
   computerWinRate {rock: 0}
@@ -424,9 +424,72 @@ with a particular move, and multiplying it by 100
 
 Data Structures
 Intermediate: Thinking through this: In order to calculate the win rate for each of the possible moves, I need to sum the 
-total number of valid rounds for that move (i.e., the )
+total number of valid rounds for that move (i.e., the rounds that are not ties) and then the total number of rounds that
+are wins, and divide the total wins by total rounds for the given move. I can iterate through the move history by filtering
+out the ties and filtering on the specific move in question, then I can filter on wins. Divide the length of the wins by the 
+length of the array of the specific moves. 
+
+I can probably do this whole thing with a reduce on the list of all moves.
+
+Algorithm
+Accept a history of moves and available moves as an argument. For each available move, find the total number of times 
+that move was used for non-tie games, and the total number of times the player won those games. Divide the winning games by
+total games, and add the value to the available moves on the output object. Repeat this process for both the human and computer.
+Add their moves to a single output object, on their respective properties humanWinRate and computerWinRate. Return the object
+to the caller.
+
+Step by Step
+- Accept history of moves and available moves
+- let output = {humanWinRate: {}, computerWinRate: {}}
+- For each available move:
+  - Filter the move history to exclude ties
+  - SET total to the length of the filtered array
+  - Filter the move history to include only wins
+  - SET the number of winning games to the filtered array
+  - SET winRatio to winningGames / total * 100
+  - SET output.humanWinRate[availableMove] = winRatio
+- Repeat for the computer
+- Return the object to the caller
 
 */
+
+let moveHistory = [
+  { human: "rock", computer: "paper", winner: "computer" },
+  { human: "paper", computer: "rock", winner: "human" },
+  { human: "scissors", computer: "scissors", winner: "tie" },
+];
+let availableMoves = ["rock", "paper", "scissors", "spock", "lizard"];
+let output = {
+  humanWinRate: { rock: 0, paper: 100 },
+  computerWinRate: { rock: 100, paper: 0 },
+};
+
+function getWinRates(moveHistory, availableMoves) {
+  let winRates = {
+    humanWinRate: {},
+    computerWinRate: {},
+  };
+  let moveHistoryNoTies = moveHistory.filter((round) => round.winner !== "tie");
+  availableMoves.forEach((move) => {
+    let totalMoves = moveHistoryNoTies.filter(
+      (round) => round.human === move
+    ).length;
+    let winningMovesHuman = moveHistoryNoTies.filter(
+      (round) => round.human === move && round.winner === "human"
+    ).length;
+    let winningMovesComputer = moveHistoryNoTies.filter(
+      (round) => round.human === move && round.winner === "computer"
+    ).length;
+    let winRatioHuman = (winningMovesHuman / totalMoves) * 100;
+    let winRatioComputer = (winningMovesComputer / totalMoves) * 100;
+    winRates["humanWinRate"][move] = winRatioHuman;
+    winRates["computerWinRate"][move] = winRatioComputer;
+  });
+
+  return winRates
+}
+
+console.log(getWinRates(moveHistory, availableMoves));
 
 /*
 Notes
