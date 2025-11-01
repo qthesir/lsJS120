@@ -108,6 +108,8 @@ function createComputer(moves) {
           }
           prevValue = currentValue;
         }
+
+        throw "An error has occurred";
       }
 
       this.currentMove = selectNextMove(this.moveWeights);
@@ -282,6 +284,7 @@ function createScore(human, computer) {
   return {
     human,
     computer,
+    maxRoundScore: 5,
 
     addPoint(winner) {
       if (winner === "human") {
@@ -297,9 +300,9 @@ function createScore(human, computer) {
     },
 
     pickRoundWinner() {
-      if (this.human.score >= 5) {
+      if (this.human.score >= this.maxRoundScore) {
         return "human";
-      } else if (this.computer.score >= 5) {
+      } else if (this.computer.score >= this.maxRoundScore) {
         return "computer";
       } else {
         return "no winner";
@@ -312,7 +315,7 @@ function createScore(human, computer) {
       );
     },
 
-    displayGrandWinner() {
+    displayRoundWinner() {
       console.log("------Final Score-------");
       console.log(`You: ${this.human.score}`);
       console.log(`Computer: ${this.computer.score}`);
@@ -369,9 +372,7 @@ function createRPSGame() {
       while (true) {
         this.score.resetScores();
         while (true) {
-          console.log(this.computer);
           this.computer.updateComputerStrategy();
-          console.log(this.computer);
           this.human.choose();
           this.computer.choose();
 
@@ -384,7 +385,7 @@ function createRPSGame() {
           this.moves.displayMoves();
           if (this.score.pickRoundWinner() !== "no winner") break;
         }
-        this.score.displayGrandWinner();
+        this.score.displayRoundWinner();
         if (!this.playAgain()) break;
       }
       this.displayGoodbyeMessage();
@@ -392,7 +393,7 @@ function createRPSGame() {
   };
 }
 
-RPSGame = createRPSGame();
+const RPSGame = createRPSGame();
 
 RPSGame.play();
 
