@@ -260,7 +260,7 @@ function createRules(human, computer) {
       lizard: ["paper", "spock"],
     },
 
-    determineWinner() {
+    pickWinner() {
       if (
         this.winningOutcomes[this.human.currentMove].includes(
           this.computer.currentMove
@@ -280,7 +280,7 @@ function createRules(human, computer) {
   };
 }
 
-function createScore(human, computer) {
+function createRoundManager(human, computer) {
   return {
     human,
     computer,
@@ -333,14 +333,14 @@ function createRPSGame() {
   const moves = createMoves();
   const human = createHuman(moves);
   const computer = createComputer(moves);
-  const score = createScore(human, computer);
+  const roundManager = createRoundManager(human, computer);
   const rules = createRules(human, computer);
 
   return {
     moves: moves,
     human: human,
     computer: computer,
-    score: score,
+    roundManager: roundManager,
     rules: rules,
 
     displayWelcomeMessage() {
@@ -370,22 +370,22 @@ function createRPSGame() {
     play() {
       this.displayWelcomeMessage();
       while (true) {
-        this.score.resetScores();
+        this.roundManager.resetScores();
         while (true) {
           this.computer.updateComputerStrategy();
           this.human.choose();
           this.computer.choose();
 
-          let winner = this.rules.determineWinner();
-          this.score.addPoint(winner);
+          let winner = this.rules.pickWinner();
+          this.roundManager.addPoint(winner);
           this.moves.updateMoveHistory(human, computer, winner);
 
           this.displayWinner(winner);
-          this.score.displayScore();
+          this.roundManager.displayScore();
           this.moves.displayMoves();
-          if (this.score.pickRoundWinner() !== "no winner") break;
+          if (this.roundManager.pickRoundWinner() !== "no winner") break;
         }
-        this.score.displayRoundWinner();
+        this.roundManager.displayRoundWinner();
         if (!this.playAgain()) break;
       }
       this.displayGoodbyeMessage();
