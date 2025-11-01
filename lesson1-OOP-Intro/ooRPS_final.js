@@ -39,7 +39,7 @@ function createComputer(moves) {
           prevValue = currentValue;
         }
 
-        throw "An error has occurred";
+        throw new Error("An error has occurred");
       }
 
       this.currentMove = selectNextMove(this.moveWeights);
@@ -99,6 +99,7 @@ function createComputer(moves) {
 
     updateComputerStrategy() {
       this.updateWinRatios();
+      // Implement dynamic changes here. Iterate through all moves.
       if (this.winRatios.computerWinRate["rock"] > 60) {
         this.updateWeights("rock", 50);
       }
@@ -149,11 +150,6 @@ function createMoves() {
         winner: winner,
       };
       this.moveHistory.push(movesThisRound);
-    },
-
-    resetMoves() {
-      this.moveHistory.human = [];
-      this.moveHistory.computer = [];
     },
 
     displayMoves() {
@@ -326,3 +322,11 @@ function createRPSGame() {
 const RPSGame = createRPSGame();
 
 RPSGame.play();
+
+/* 
+Improvement steps:
+- Add getters for shared values
+- Iterate through all moves and apply the rule you've set for each of them.
+- Update UX
+
+*/
