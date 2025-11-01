@@ -364,31 +364,67 @@ PEDAC: Update Analysis
 
 Problem
 Accept an array historicalMoves that contains an object at each index with 3 properties - human, computer, 
-and winner - with the human property containing the humans move at that round, computer containing the computers property, and the winner containing the winner of the round. 
-The function should return an object which contains 5 properties,
-one for each of the 5 moves, and a tuple, which contains a tuple with the win outcomes for the human and 
-computer, respectively, for a given move. The array lengths for human, computer, and winner will always
-be the same, and the array index x in all of the properties are related to the same round. If the move has
-not been performed yet, it should not have a property on the array
+and winner - with the human property containing the humans move at that round, computer containing the 
+computers move, and the winner containing the winner of the round. The function should return an object 
+which contains two properties: humanWinRate and computerWinRate. Each of these contain an object 
+with properties of all of the moves in the move history that were used by that player, and the value of
+those properties should be the proportion, in whole number percentage terms, of how often the human or 
+computer won with that selection. In the event of a tie, the selection should not count toward a 
+win or loss. 
 
 // Examples 
 Input: [{human: 'rock', computer: 'paper', winner: 'computer'}, 
 {human: 'paper', computer: 'rock', winner: 'human'}]
 
 Output: { rock: [0, 100], paper: [100, 0] }
+  humanWinRate: {rock: 0, paper: 100}
+  computerWinRate: {rock: 100, paper: 0}
 
 Input: []
-Output: {}
+Output:
+  humanWinRate: {}
+  computerWinRate: {}
 
 Input: [{human: 'scissors', computer: 'paper', winner: 'human'}, 
 {human: 'paper', computer: 'rock', winner: 'human'},
 {human: 'paper', computer 'lizard', winner: 'computer'}]
 
-output: { scissors: [], paper: [], }
+Output: 
+  humanWinRate: {scissors: 100, paper: 50}
+  computerWinRate {paper: 0, rock: 0, lizard: 100}
+
+Input: [{human: 'scissors', computer: 'scissors', winner: 'tie'}, 
+{human: 'paper', computer: 'rock', winner: 'human'},
+Output:
+  humanWinRate: {paper: 100}
+  computerWinRate {rock: 0}
+
 
 Shoot... What do I do if the computer has made a move, but the human hasn't? Maybe two different objects,
-one for the computer, and one for the human, would be more appropriate? 
+one for the computer, and one for the human, would be more appropriate? I don't know... I think 
+human win rate, and computerWinRate, are more intuitive. They could each be on the analysis object.
+Which one should I pick? Fuck. I mean, I at least need to use a {human:, computer:} because how 
+do I know which is which if there is only 1 value? 
 
+human win rate: {rock: 0, paper: 100}
+
+Yes this is better. 
+
+Ok, so now that I have this more or less concrete...
+
+Requirements: 
+
+- Accept an array of moves and outcomes as an argument
+- Return an object for the computer and human that contains the win rates for each of the RPS options 
+- If the move is not in the array of moves, do not add it to the output object. 
+- If the outcome of a round is a tie in the array of moves, do not consider the moves for the win percentage on the output object              
+- The win rates on the output object should be in whole percentage terms
+- The win rate is calculated by dividing the wins for a particular move by the total number of rounds
+with a particular move, and multiplying it by 100
+
+Data Structures
+Intermediate: Thinking through this: In order to calculate the win rate for each of the possible moves, I need to sum the 
+total number of valid rounds for that move (i.e., the )
 
 */
 
