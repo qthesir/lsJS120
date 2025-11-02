@@ -63,9 +63,9 @@ function createComputer(moves) {
         return (winningMoves / totalMoves) * 100;
       }
 
-      let moveHistoryNoTies = this.moves.moveHistory.filter(
-        (round) => round.winner !== "tie"
-      );
+      let moveHistoryNoTies = this.moves
+        .getMoveHistory()
+        .filter((round) => round.winner !== "tie");
 
       this.moves.getAvailableMoves().forEach((move) => {
         let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
@@ -152,6 +152,10 @@ function createMoves() {
 
     getAvailableMoves() {
       return [...this.availableMoves];
+    },
+
+    getMoveHistory() {
+      return JSON.parse(JSON.stringify(moveHistory));
     },
 
     updateMoveHistory(human, computer, winner) {
