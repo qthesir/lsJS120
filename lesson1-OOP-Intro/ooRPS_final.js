@@ -85,11 +85,6 @@ function createComputer(moves) {
 
     updateWeights(moveToUpdate, percentChange) {
       let netChange = this.moveWeights[moveToUpdate] * (percentChange / 100);
-      if (
-        this.moveWeights[moveToUpdate] + netChange >= 50 ||
-        this.moveWeights[moveToUpdate] + netChange <= 5
-      )
-        return undefined;
       this.moveWeights[moveToUpdate] =
         this.moveWeights[moveToUpdate] + netChange;
       for (const move of Object.keys(this.moveWeights)) {
@@ -101,14 +96,34 @@ function createComputer(moves) {
       return undefined;
     },
 
+    resetComputerStrategy() {
+      this.moveWeights = {
+        rock: 20,
+        paper: 20,
+        scissors: 20,
+        spock: 20,
+        lizard: 20,
+      };
+    },
+
     updateComputerStrategy() {
       this.updateWinRatios();
-      // Implement dynamic changes here. Iterate through all moves.
-      if (this.winRatios.computerWinRate["rock"] > 60) {
-        this.updateWeights("rock", 50);
+
+      for (const move of this.moves.getAvailableMoves()) {
+        if (this.winRatios.computerWinRate[move] > 60) {
+          this.updateWeights(move, 50);
+        }
+        if (this.winRatios.computerWinRate[move] < 40) {
+          this.updateWeights(move, -50);
+        }
       }
-      if (this.winRatios.computerWinRate["rock"] < 40) {
-        this.updateWeights("rock", -50);
+
+      if (
+        Object.values(this.moveWeights).some(
+          (value) => !!(value <= 5 || value >= 60)
+        )
+      ) {
+        this.resetComputerStrategy();
       }
     },
   };
@@ -313,7 +328,9 @@ function createRPSGame() {
       while (true) {
         this.roundManager.resetScores();
         while (true) {
+          console.log(computer.moveWeights);
           this.computer.updateComputerStrategy();
+          console.log(computer.moveWeights);
           this.human.choose();
           this.computer.choose();
 
@@ -344,4 +361,7 @@ Improvement steps:
 - Iterate through all moves and apply the rule you've set for each of them.
 - Update UX
 
+Aside: Now I see more clearly why you want one function, one purpose. If a function handled multiple
+things, like displayWinner handling both choosing the winner and displaying it, this is confusing,
+and more difficult to read. 
 */
