@@ -6,6 +6,10 @@ function createPlayer(moves) {
     currentMove: null,
     score: 0,
 
+    getCurrentMove() {
+      return this.currentMove;
+    },
+
     incrementScore() {
       this.score += 1;
     },
@@ -63,7 +67,7 @@ function createComputer(moves) {
         (round) => round.winner !== "tie"
       );
 
-      this.moves.availableMoves.forEach((move) => {
+      this.moves.getAvailableMoves().forEach((move) => {
         let winRatioHuman = getPlayerWinRatio(moveHistoryNoTies, move, "human");
         let winRatioComputer = getPlayerWinRatio(
           moveHistoryNoTies,
@@ -120,14 +124,17 @@ function createHuman(moves) {
       let choice;
       while (true) {
         console.log(
-          `Choose one of the following options: ${this.moves.availableMoves
-            .slice(0, this.moves.availableMoves.length - 1)
+          `Choose one of the following options: ${this.moves
+            .getAvailableMoves()
+            .slice(0, this.moves.getAvailableMoves().length - 1)
             .join(", ")}, or ${
-            this.moves.availableMoves[this.moves.availableMoves.length - 1]
+            this.moves.getAvailableMoves()[
+              this.moves.getAvailableMoves().length - 1
+            ]
           }: `
         );
         choice = rlsync.question();
-        if (this.moves.availableMoves.includes(choice)) break;
+        if (this.moves.getAvailableMoves().includes(choice)) break;
         console.log("Sorry, invalid choice");
       }
 
@@ -143,10 +150,14 @@ function createMoves() {
     availableMoves: ["rock", "paper", "scissors", "spock", "lizard"],
     moveHistory: [],
 
+    getAvailableMoves() {
+      return [...this.availableMoves];
+    },
+
     updateMoveHistory(human, computer, winner) {
       let movesThisRound = {
-        human: human.currentMove,
-        computer: computer.currentMove,
+        human: human.getCurrentMove(),
+        computer: computer.getCurrentMove(),
         winner: winner,
       };
       this.moveHistory.push(movesThisRound);
@@ -188,14 +199,14 @@ function createRules(human, computer) {
 
     pickWinner() {
       if (
-        this.winningOutcomes[this.human.currentMove].includes(
-          this.computer.currentMove
+        this.winningOutcomes[this.human.getCurrentMove()].includes(
+          this.computer.getCurrentMove()
         )
       ) {
         return "human";
       } else if (
-        this.winningOutcomes[this.computer.currentMove].includes(
-          this.human.currentMove
+        this.winningOutcomes[this.computer.getCurrentMove()].includes(
+          this.human.getCurrentMove()
         )
       ) {
         return "computer";
@@ -278,8 +289,8 @@ function createRPSGame() {
     },
 
     displayWinner(winner) {
-      console.log(`You chose ${this.human.currentMove}`);
-      console.log(`Computer chose ${this.computer.currentMove}`);
+      console.log(`You chose ${this.human.getCurrentMove()}`);
+      console.log(`Computer chose ${this.computer.getCurrentMove()}`);
       if (winner === "tie") {
         console.log("Its a tie!");
       } else {
