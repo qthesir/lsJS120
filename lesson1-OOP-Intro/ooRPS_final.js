@@ -155,10 +155,7 @@ function createMoves() {
     },
 
     getMoveHistory() {
-      return this.moveHistory.reduce(
-        (clone, move) => clone.push({ ...move }),
-        []
-      );
+      return this.moveHistory.map((move) => ({ ...move }));
     },
 
     updateMoveHistory(human, computer, winner) {
