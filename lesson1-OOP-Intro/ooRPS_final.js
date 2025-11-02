@@ -155,7 +155,10 @@ function createMoves() {
     },
 
     getMoveHistory() {
-      return JSON.parse(JSON.stringify(moveHistory));
+      return this.moveHistory.reduce(
+        (clone, move) => clone.push({ ...move }),
+        []
+      );
     },
 
     updateMoveHistory(human, computer, winner) {
