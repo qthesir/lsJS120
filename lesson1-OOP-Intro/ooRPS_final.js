@@ -406,14 +406,3 @@ function createRPSGame() {
 const RPSGame = createRPSGame();
 
 RPSGame.play();
-
-/* 
-Improvement steps:
-- Add getters for shared values
-- Iterate through all moves and apply the rule you've set for each of them.
-- Update UX
-
-Aside: Now I see more clearly why you want one function, one purpose. If a function handled multiple
-things, like displayWinner handling both choosing the winner and displaying it, this is confusing,
-and more difficult to read. 
-*/
