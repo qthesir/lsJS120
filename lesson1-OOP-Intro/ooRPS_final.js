@@ -246,6 +246,7 @@ function createGameManager(human, computer) {
     human,
     computer,
     maxRoundScore: 5,
+    currentRoundWinner: undefined,
     winningOutcomes: {
       rock: ["scissors", "lizard"],
       paper: ["rock", "spock"],
@@ -254,21 +255,25 @@ function createGameManager(human, computer) {
       lizard: ["paper", "spock"],
     },
 
-    pickRoundWinner() {
+    getCurrentRoundWinner() {
+      return this.currentRoundWinner;
+    },
+
+    updateRoundWinner() {
       if (
         this.winningOutcomes[this.human.getCurrentMove()].includes(
           this.computer.getCurrentMove()
         )
       ) {
-        return "human";
+        this.currentRoundWinner = "human";
       } else if (
         this.winningOutcomes[this.computer.getCurrentMove()].includes(
           this.human.getCurrentMove()
         )
       ) {
-        return "computer";
+        this.currentRoundWinner = "computer";
       } else {
-        return "tie";
+        this.currentRoundWinner = "tie";
       }
     },
 
@@ -283,7 +288,7 @@ function createGameManager(human, computer) {
     },
 
     addPoint() {
-      const winner = this.pickRoundWinner();
+      const winner = this.currentRoundWinner;
       if (winner === "human") {
         this.human.incrementScore();
       } else if (winner === "computer") {
@@ -304,7 +309,7 @@ function createGameManager(human, computer) {
     },
 
     displayRoundWinner() {
-      const winner = this.pickRoundWinner();
+      const winner = this.currentRoundWinner;
       console.log("");
       console.log(`You chose ${this.human.getCurrentMove()}`);
       console.log(`Computer chose ${this.computer.getCurrentMove()}`);
@@ -378,12 +383,13 @@ function createRPSGame() {
           this.computer.updateComputerStrategy();
           this.human.choose();
           this.computer.choose();
+          this.gameManager.updateRoundWinner();
 
           this.gameManager.addPoint();
           this.moves.updateMoveHistory(
             human,
             computer,
-            this.gameManager.pickRoundWinner()
+            this.gameManager.getCurrentRoundWinner()
           );
 
           this.gameManager.displayRoundWinner();
