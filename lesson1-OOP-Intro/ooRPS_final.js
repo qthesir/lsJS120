@@ -138,6 +138,7 @@ function createHuman(moves) {
     choose() {
       let choice;
       while (true) {
+        console.log("");
         console.log(
           `Choose one of the following options: ${this.moves
             .getAvailableMoves()
@@ -164,6 +165,7 @@ function createMoves() {
   return {
     availableMoves: ["rock", "paper", "scissors", "spock", "lizard"],
     moveHistory: [],
+    movesToDisplay: 5,
 
     getAvailableMoves() {
       return [...this.availableMoves];
@@ -190,16 +192,26 @@ function createMoves() {
         }
         return paddedStr;
       }
+      let startingIndex =
+        this.moveHistory.length <= this.movesToDisplay
+          ? 0
+          : this.moveHistory.length - this.movesToDisplay;
+      console.log("");
       console.log(`           |  Human   | Computer | Winner  `);
       console.log("-----------|----------|----------|---------");
-      this.moveHistory.forEach(({ computer, human, winner }, index) => {
-        console.log(
-          `Round ${addPadding(String(index + 1) + ":", 3)}  |  ${addPadding(
-            human,
-            8
-          )}|  ${addPadding(computer, 8)}|  ${winner}`
-        );
-      });
+      this.moveHistory
+        .slice(startingIndex, this.moveHistory.length)
+        .forEach(({ computer, human, winner }, index) => {
+          console.log(
+            `Round ${addPadding(
+              String(index + startingIndex + 1) + ":",
+              3
+            )}  |  ${addPadding(human, 8)}|  ${addPadding(
+              computer,
+              8
+            )}|  ${winner}`
+          );
+        });
     },
   };
 }
@@ -266,12 +278,14 @@ function createRoundManager(human, computer) {
     },
 
     displayScore() {
+      console.log("");
       console.log(
         `Your score: ${this.human.score}\nComputer's Score: ${this.computer.score}`
       );
     },
 
     displayRoundWinner() {
+      console.log("");
       console.log("------Final Score-------");
       console.log(`You: ${this.human.score}`);
       console.log(`Computer: ${this.computer.score}`);
@@ -300,14 +314,28 @@ function createRPSGame() {
     rules: rules,
 
     displayWelcomeMessage() {
-      console.log("Welcome to Rock, Paper, Scissors!");
+      console.clear();
+      console.log(
+        "------------Welcome to Rock, Paper, Scissors, Spock, Lizard!------------"
+      );
+      console.log("");
+      console.log("Rules: ");
+      console.log("- Rock crushes scissors and lizard");
+      console.log("- Paper beats rock and spock");
+      console.log("- Scissors cuts paper and decapitates lizard");
+      console.log("- Spock vaporizes rock and scissors");
+      console.log("- Lizard eats paper and spock");
+      console.log("");
+      console.log("The first to 5 points wins!");
     },
 
     displayGoodbyeMessage() {
+      console.log("");
       console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
     },
 
     displayWinner(winner) {
+      console.log("");
       console.log(`You chose ${this.human.getCurrentMove()}`);
       console.log(`Computer chose ${this.computer.getCurrentMove()}`);
       if (winner === "tie") {
@@ -318,6 +346,7 @@ function createRPSGame() {
     },
 
     playAgain() {
+      console.log("");
       console.log("Would you like to play again? (y/n)");
       let answer = rlsync.question();
       return answer.toLowerCase()[0] === "y";
@@ -328,9 +357,7 @@ function createRPSGame() {
       while (true) {
         this.roundManager.resetScores();
         while (true) {
-          console.log(computer.moveWeights);
           this.computer.updateComputerStrategy();
-          console.log(computer.moveWeights);
           this.human.choose();
           this.computer.choose();
 
