@@ -3,7 +3,7 @@ const rlsync = require("readline-sync");
 function createPlayer(moves) {
   return {
     moves,
-    currentMove: null,
+    currentMove: undefined,
     score: 0,
 
     getCurrentMove() {
@@ -241,10 +241,11 @@ function createMoves() {
   };
 }
 
-function createRules(human, computer) {
+function createGameManager(human, computer) {
   return {
     human,
     computer,
+    maxRoundScore: 5,
     winningOutcomes: {
       rock: ["scissors", "lizard"],
       paper: ["rock", "spock"],
@@ -253,7 +254,7 @@ function createRules(human, computer) {
       lizard: ["paper", "spock"],
     },
 
-    pickWinner() {
+    pickRoundWinner() {
       if (
         this.winningOutcomes[this.human.getCurrentMove()].includes(
           this.computer.getCurrentMove()
@@ -270,16 +271,19 @@ function createRules(human, computer) {
         return "tie";
       }
     },
-  };
-}
 
-function createRoundManager(human, computer) {
-  return {
-    human,
-    computer,
-    maxRoundScore: 5,
+    pickGrandWinner() {
+      if (this.human.score >= this.maxRoundScore) {
+        return "human";
+      } else if (this.computer.score >= this.maxRoundScore) {
+        return "computer";
+      } else {
+        return "no winner";
+      }
+    },
 
-    addPoint(winner) {
+    addPoint() {
+      const winner = this.pickRoundWinner();
       if (winner === "human") {
         this.human.incrementScore();
       } else if (winner === "computer") {
@@ -292,16 +296,6 @@ function createRoundManager(human, computer) {
       this.computer.resetScore();
     },
 
-    pickRoundWinner() {
-      if (this.human.score >= this.maxRoundScore) {
-        return "human";
-      } else if (this.computer.score >= this.maxRoundScore) {
-        return "computer";
-      } else {
-        return "no winner";
-      }
-    },
-
     displayScore() {
       console.log("");
       console.log(
@@ -310,14 +304,26 @@ function createRoundManager(human, computer) {
     },
 
     displayRoundWinner() {
+      const winner = this.pickRoundWinner();
+      console.log("");
+      console.log(`You chose ${this.human.getCurrentMove()}`);
+      console.log(`Computer chose ${this.computer.getCurrentMove()}`);
+      if (winner === "tie") {
+        console.log("Its a tie!");
+      } else {
+        console.log("human" === winner ? "You win!" : "Computer wins!");
+      }
+    },
+
+    displayGrandWinner() {
       console.log("");
       console.log("------Final Score-------");
       console.log(`You: ${this.human.score}`);
       console.log(`Computer: ${this.computer.score}`);
       console.log("------------------------");
-      if (this.pickRoundWinner() === "human") {
+      if (this.pickGrandWinner() === "human") {
         console.log("Congratulations! You're the reining champion!");
-      } else if (this.pickRoundWinner() === "computer") {
+      } else if (this.pickGrandWinner() === "computer") {
         console.log("Computer is the reining champion!");
       }
     },
@@ -328,15 +334,13 @@ function createRPSGame() {
   const moves = createMoves();
   const human = createHuman(moves);
   const computer = createComputer(moves);
-  const roundManager = createRoundManager(human, computer);
-  const rules = createRules(human, computer);
+  const gameManager = createGameManager(human, computer);
 
   return {
     moves: moves,
     human: human,
     computer: computer,
-    roundManager: roundManager,
-    rules: rules,
+    gameManager: gameManager,
 
     displayWelcomeMessage() {
       console.clear();
@@ -359,17 +363,6 @@ function createRPSGame() {
       console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
     },
 
-    displayWinner(winner) {
-      console.log("");
-      console.log(`You chose ${this.human.getCurrentMove()}`);
-      console.log(`Computer chose ${this.computer.getCurrentMove()}`);
-      if (winner === "tie") {
-        console.log("Its a tie!");
-      } else {
-        console.log("human" === winner ? "You win!" : "Computer wins!");
-      }
-    },
-
     playAgain() {
       console.log("");
       console.log("Would you like to play again? (y/n)");
@@ -380,22 +373,25 @@ function createRPSGame() {
     play() {
       this.displayWelcomeMessage();
       while (true) {
-        this.roundManager.resetScores();
+        this.gameManager.resetScores();
         while (true) {
           this.computer.updateComputerStrategy();
           this.human.choose();
           this.computer.choose();
 
-          let winner = this.rules.pickWinner();
-          this.roundManager.addPoint(winner);
-          this.moves.updateMoveHistory(human, computer, winner);
+          this.gameManager.addPoint();
+          this.moves.updateMoveHistory(
+            human,
+            computer,
+            this.gameManager.pickRoundWinner()
+          );
 
-          this.displayWinner(winner);
-          this.roundManager.displayScore();
+          this.gameManager.displayRoundWinner();
+          this.gameManager.displayScore();
           this.moves.displayMoves();
-          if (this.roundManager.pickRoundWinner() !== "no winner") break;
+          if (this.gameManager.pickGrandWinner() !== "no winner") break;
         }
-        this.roundManager.displayRoundWinner();
+        this.gameManager.displayGrandWinner();
         if (!this.playAgain()) break;
       }
       this.displayGoodbyeMessage();
