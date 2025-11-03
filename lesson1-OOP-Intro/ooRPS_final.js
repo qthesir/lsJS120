@@ -150,6 +150,31 @@ function createHuman(moves) {
           }: `
         );
         choice = rlsync.question();
+        switch (choice[0]) {
+          case "r":
+            choice = "rock";
+            break;
+          case "p":
+            choice = "paper";
+            break;
+          case "l":
+            choice = "lizard";
+            break;
+          default:
+            choice = choice;
+        }
+
+        switch (choice.slice(0, 2)) {
+          case "sc":
+            choice = "scissors";
+            break;
+          case "sp":
+            choice = "spock";
+            break;
+          default:
+            choice = choice;
+        }
+
         if (this.moves.getAvailableMoves().includes(choice)) break;
         console.log("Sorry, invalid choice");
       }
