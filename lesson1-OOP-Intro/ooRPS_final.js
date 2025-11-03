@@ -277,7 +277,7 @@ function createGameManager(human, computer) {
       }
     },
 
-    pickGrandWinner() {
+    determineGrandWinner() {
       if (this.human.score >= this.maxRoundScore) {
         return "human";
       } else if (this.computer.score >= this.maxRoundScore) {
@@ -326,9 +326,9 @@ function createGameManager(human, computer) {
       console.log(`You: ${this.human.score}`);
       console.log(`Computer: ${this.computer.score}`);
       console.log("------------------------");
-      if (this.pickGrandWinner() === "human") {
+      if (this.determineGrandWinner() === "human") {
         console.log("Congratulations! You're the reining champion!");
-      } else if (this.pickGrandWinner() === "computer") {
+      } else if (this.determineGrandWinner() === "computer") {
         console.log("Computer is the reining champion!");
       }
     },
@@ -383,8 +383,8 @@ function createRPSGame() {
           this.computer.updateComputerStrategy();
           this.human.choose();
           this.computer.choose();
-          this.gameManager.updateRoundWinner();
 
+          this.gameManager.updateRoundWinner();
           this.gameManager.addPoint();
           this.moves.updateMoveHistory(
             human,
@@ -395,7 +395,7 @@ function createRPSGame() {
           this.gameManager.displayRoundWinner();
           this.gameManager.displayScore();
           this.moves.displayMoves();
-          if (this.gameManager.pickGrandWinner() !== "no winner") break;
+          if (this.gameManager.determineGrandWinner() !== "no winner") break;
         }
         this.gameManager.displayGrandWinner();
         if (!this.playAgain()) break;
