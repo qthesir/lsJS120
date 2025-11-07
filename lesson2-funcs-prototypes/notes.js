@@ -1,15 +1,62 @@
-let a = { foo: 1, bar: 2 };
+// let a = { foo: 1, bar: 2 };
 
-let b = {};
+// let b = {};
+
+// b.what = "so";
+
+// Object.setPrototypeOf(b, a);
+
+// console.log(Object.getPrototypeOf(b));
+
+// a.foo = 42;
+
+// console.log(b.foo);
+
+// console.log(Object.getPrototypeOf(b));
+
+// console.log(Object.getPrototypeOf(a));
+
+// for (let i in b) {
+//   if (b.hasOwnProperty(i)) console.log(i);
+// }
+
+// function Foo() {
+//   this.bar = "qux";
+// }
+
+// let newFoo = new Foo();
+// let otherFoo = new Foo();
+
+// console.log(Object.getPrototypeOf(Foo), Foo.prototype);
+
+// console.log(Object.getPrototypeOf(Foo) === Foo.prototype);
+// console.log(Object.getPrototypeOf(Foo.prototype) === Object.prototype);
+// console.log(Foo.prototype);
+// Foo.prototype.newProp = "goodbye";
+// console.log(newFoo.newProp);
+// console.log(otherFoo.newProp);
+// Foo.prototype.newProp = "hello";
+// console.log(Foo);
+// console.log(newFoo.newProp, newFoo.bar);
+// console.log(otherFoo.newProp, otherFoo.bar);
+// console.log(Object.getPrototypeOf(Foo));
+
+let a = {
+  foo: 1,
+};
+
+let b = {
+  bar: 2,
+};
 
 Object.setPrototypeOf(b, a);
 
-console.log(Object.getPrototypeOf(b));
+let c = Object.create(b);
 
-a.foo = 42;
-
-console.log(b.foo);
-
-console.log(Object.getPrototypeOf(b));
-
-console.log(Object.getPrototypeOf(a))
+console.log(c.foo);
+c.foo = 42;
+console.log(c.foo);
+console.log(a.foo);
+console.log(c);
+console.log(a);
+console.log(a.isPrototypeOf(b))
