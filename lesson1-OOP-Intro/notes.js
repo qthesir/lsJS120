@@ -38,7 +38,7 @@ function Car(make, fuelLevel, engineOn) {
   };
 
   this.stopEngine = function () {
-    this.engineOne = false;
+    this.engineOn = false;
   };
 
   this.refuel = function (percent) {
