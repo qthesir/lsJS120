@@ -20,20 +20,23 @@ those of their prototype.
 For instance: 
 */
 
-let bar = { prop1: 1 };
-let qux = { prop2: 2 };
+let bar = { prop1: 1, prop2: 2, prop3: 3 };
+let qux = {};
+qux.prop1 = 4;
 Object.setPrototypeOf(qux, bar);
 
-console.log("For/in")
+console.log("For/in");
 for (let property in qux) {
   console.log(`${property}: ${qux[property]}`);
 }
 
-console.log('Keys:')
+console.log("Keys:");
 
 Object.keys(qux).forEach((property) => {
   console.log(`${property}: ${qux[property]}`);
 });
+
+console.log();
 
 /*
 In the above example, we have two objects: bar and qux, with properties prop1 and prop2 respectively.
@@ -41,5 +44,13 @@ bar is qux's prototype. When iterating over the properties of qux with a for/in 
 AND prop 1 are logged to the console, since for/in iterates over all the objects properties, 
 not just their own properties. On the loop using Object.keys() on the other hand, only qux's property
 prop 2 is logged in the console. 
+
+Hm... Another interesting edge case that LS brought is, for for/in, the objects own property
+will be logged in precedence to a property on the object's prototype. That is, for each
+property, it only seems to search for it once. Its not searching for all variations of the 
+property, just the first one it sees. So it "climbs the ladder" each time until it finds 
+the property, and then returns its value. 
+
+I've changed the above example to reflect this additional difference. 
 
 */
