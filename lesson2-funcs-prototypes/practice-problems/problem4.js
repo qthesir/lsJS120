@@ -37,11 +37,11 @@ function assignProperty2(obj, prop, value) {
   if (obj.hasOwnProperty(prop)) {
     obj[prop] = value;
     return undefined;
-  } else if (Object.getPrototypeOf(obj) === Object.prototype) {
+  } else if (Object.getPrototypeOf(obj) === null) {
     return undefined;
+  } else {
+    return assignProperty2(Object.getPrototypeOf(obj), prop, value);
   }
-
-  return assignProperty2(Object.getPrototypeOf(obj), prop, value);
 }
 
 function assignProperty(obj, prop, value) {
@@ -49,7 +49,7 @@ function assignProperty(obj, prop, value) {
     if (obj.hasOwnProperty(prop)) {
       obj[prop] = value;
       break;
-    } else if (Object.getPrototypeOf(obj) === Object.prototype) {
+    } else if (Object.getPrototypeOf(obj) === null) {
       break;
     }
     obj = Object.getPrototypeOf(obj);
