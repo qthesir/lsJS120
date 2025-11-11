@@ -41,22 +41,42 @@
 // console.log(otherFoo.newProp, otherFoo.bar);
 // console.log(Object.getPrototypeOf(Foo));
 
-let a = {
-  foo: 1,
-};
+// let a = {
+//   foo: 1,
+// };
 
-let b = {
-  bar: 2,
-};
+// let b = {
+//   bar: 2,
+// };
 
-Object.setPrototypeOf(b, a);
+// Object.setPrototypeOf(b, a);
 
-let c = Object.create(b);
+// let c = Object.create(b);
 
-console.log(c.foo);
-c.foo = 42;
-console.log(c.foo);
-console.log(a.foo);
-console.log(c);
-console.log(a);
-console.log(a.isPrototypeOf(b))
+// console.log(c.foo);
+// c.foo = 42;
+// console.log(c.foo);
+// console.log(a.foo);
+// console.log(c);
+// console.log(a);
+// console.log(a.isPrototypeOf(b))
+
+function createGreeter(language) {
+  switch (language) {
+    case 'en':
+      return (name) => console.log(`Hello, ${name}!`);
+    case 'es':
+      return (name) => console.log(`Hola, ${name}!`);
+    case 'fr':
+      return (name) => console.log(`Bonjour, ${name}!`);
+  }
+}
+
+let greeterEs = createGreeter('es');
+greeterEs('John'); // logs 'Hola!'
+greeterEs('Gerald'); // logs 'Hola!'
+greeterEs('Tom'); // logs 'Hola!'
+
+let greeterEn = createGreeter('en');
+greeterEn('Carl'); // logs 'Hello!'
+
