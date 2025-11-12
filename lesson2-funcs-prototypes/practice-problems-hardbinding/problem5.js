@@ -25,4 +25,8 @@ line 16, which is a new function with foo's functionality with obj set as the pe
 context. bar.call(otherObj) will not return the execution context of otherObj, as is implied by
 the .call method, because the bound function will always execute in the execution context it was 
 bound to. 
+
+Other, simpler way of saying this: the function bar, called on line 18, is permanently bound to 
+obj on line 16. Once a functions execution context has been set with bind, it cannot be 
+changed, even with call and apply. Therefore, this code will log "Amzebulous" to the console. 
 */
