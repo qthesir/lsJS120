@@ -61,22 +61,43 @@
 // console.log(a);
 // console.log(a.isPrototypeOf(b))
 
-function createGreeter(language) {
-  switch (language) {
-    case 'en':
-      return (name) => console.log(`Hello, ${name}!`);
-    case 'es':
-      return (name) => console.log(`Hola, ${name}!`);
-    case 'fr':
-      return (name) => console.log(`Bonjour, ${name}!`);
-  }
+// function createGreeter(language) {
+//   switch (language) {
+//     case 'en':
+//       return (name) => console.log(`Hello, ${name}!`);
+//     case 'es':
+//       return (name) => console.log(`Hola, ${name}!`);
+//     case 'fr':
+//       return (name) => console.log(`Bonjour, ${name}!`);
+//   }
+// }
+
+// let greeterEs = createGreeter('es');
+// greeterEs('John'); // logs 'Hola!'
+// greeterEs('Gerald'); // logs 'Hola!'
+// greeterEs('Tom'); // logs 'Hola!'
+
+// let greeterEn = createGreeter('en');
+// greeterEn('Carl'); // logs 'Hello!'
+
+let obj = {
+  a: 1,
+  b: 2
 }
 
-let greeterEs = createGreeter('es');
-greeterEs('John'); // logs 'Hola!'
-greeterEs('Gerald'); // logs 'Hola!'
-greeterEs('Tom'); // logs 'Hola!'
+function sumAB() {
+  console.log(this.a + this.b)
+}
 
-let greeterEn = createGreeter('en');
-greeterEn('Carl'); // logs 'Hello!'
+obj.sumAB = sumAB.bind(obj)
 
+let obj2 = {
+  a: 3,
+  b: 4
+}
+
+obj2.sumAB = obj.sumAB
+
+obj.sumAB()
+
+obj2.sumAB.call(obj2)
