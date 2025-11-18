@@ -71,6 +71,6 @@ function logReturnVal3(func) {
   console.log(returnVal);
 }
 
-let getDescription = turk3.getDescription.bind(turk3);
+let getTurkDescription = turk3.getDescription.bind(turk3);
 
-logReturnVal3(getDescription);
+logReturnVal3(getTurkDescription);
