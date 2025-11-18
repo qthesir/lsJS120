@@ -50,3 +50,27 @@ function logReturnVal2(func, context) {
 }
 
 logReturnVal2(turk2.getDescription, turk2);
+
+/*
+
+*/
+
+let turk3 = {
+  firstName: "Christopher",
+  lastName: "Turk",
+  occupation: "Surgeon",
+  getDescription() {
+    return (
+      this.firstName + " " + this.lastName + " is a " + this.occupation + "."
+    );
+  },
+};
+
+function logReturnVal3(func) {
+  let returnVal = func();
+  console.log(returnVal);
+}
+
+let getDescription = turk3.getDescription.bind(turk3);
+
+logReturnVal3(getDescription);
