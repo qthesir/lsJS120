@@ -18,6 +18,7 @@ let bar = foo.bind(obj);
 bar.call(otherObj);
 
 
+
 /*
 
 "Amazebulous" will be logged to the console. Bar is set to the return value of foo.bind(obj) on 

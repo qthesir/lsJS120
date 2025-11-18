@@ -80,24 +80,87 @@
 // let greeterEn = createGreeter('en');
 // greeterEn('Carl'); // logs 'Hello!'
 
+// let obj = {
+//   a: 1,
+//   b: 2
+// }
+
+// function sumAB() {
+//   console.log(this.a + this.b)
+// }
+
+// obj.sumAB = sumAB.bind(obj)
+
+// let obj2 = {
+//   a: 3,
+//   b: 4
+// }
+
+// obj2.sumAB = obj.sumAB
+
+// obj.sumAB()
+
+// obj2.sumAB.call(obj2)
+
+// let obj = {
+//   a: "hello",
+//   b: "world",
+//   foo: function () {
+//     let self = this;
+
+//     function bar() {
+//       console.log(self.a + " " + self.b);
+//     }
+
+//     bar.call(this);
+//   },
+// };
+
+// obj.foo(); // => hello world
+
+// let obj = {
+//   a: 5,
+//   b: { a: this.a },
+//   foo: () => {
+//     console.log(this.a);
+//   },
+// };
+
+// obj.foo(); // => undefined
+// console.log(obj.b.a);
+
 let obj = {
-  a: 1,
-  b: 2
-}
+  a: "hello",
+  b: "world",
+  foo: function () {
+    let a = "hi";
 
-function sumAB() {
-  console.log(this.a + this.b)
-}
+    let b = "there";
+    let bar = () => {
+      console.log(this.a + " " + this.b);
+      console.log("lexical proof: " + a + " " + b);
+    };
 
-obj.sumAB = sumAB.bind(obj)
+    // some code
+    bar();
+
+    // some more code
+    bar();
+
+    // still more code
+  },
+};
 
 let obj2 = {
-  a: 3,
-  b: 4
-}
+  a: "This is obj2",
+};
 
-obj2.sumAB = obj.sumAB
+obj.foo();
+// => hello world
+// => hello world
 
-obj.sumAB()
+let newFoo = obj.foo;
 
-obj2.sumAB.call(obj2)
+newFoo();
+
+obj.foo.call(obj2);
