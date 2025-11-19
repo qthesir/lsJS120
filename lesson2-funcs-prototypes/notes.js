@@ -129,38 +129,103 @@
 // obj.foo(); // => undefined
 // console.log(obj.b.a);
 
+// let obj = {
+//   a: "hello",
+//   b: "world",
+//   foo: function () {
+//     let a = "hi";
+
+//     let b = "there";
+//     let bar = () => {
+//       console.log(this.a + " " + this.b);
+//       console.log("lexical proof: " + a + " " + b);
+//     };
+
+//     // some code
+//     bar();
+
+//     // some more code
+//     bar();
+
+//     // still more code
+//   },
+// };
+
+// let obj2 = {
+//   a: "This is obj2",
+// };
+
+// obj.foo();
+// // => hello world
+// // => hello world
+
+// let newFoo = obj.foo;
+
+// newFoo();
+
+// obj.foo.call(obj2);
+
+// let objOuter = {
+//   a: "bye",
+// };
+
+// function hello() {
+//   let obj = {
+//     a: 5,
+//     b: {
+//       a: "hi",
+//       foo: () => {
+//         console.log(this.a);
+//       },
+//     },
+
+//     foo: () => {
+//       console.log(this.a);
+//     },
+//   };
+
+//   obj.foo();
+//   obj.b.foo();
+// }
+
+// hello.call(objOuter);
+
+// // obj.foo(); // => undefined
+
+// // obj.b.foo();
+
 let obj = {
   a: "hello",
   b: "world",
   foo: function () {
-    let a = "hi";
-
-    let b = "there";
-    let bar = () => {
-      console.log(this.a + " " + this.b);
-      console.log("lexical proof: " + a + " " + b);
-    };
-
-    // some code
-    bar();
-
-    // some more code
-    bar();
-
-    // still more code
+    [1, 2, 3].forEach((number) => {
+      console.log(String(number) + " " + this.a + " " + this.b);
+    });
   },
 };
 
-let obj2 = {
-  a: "This is obj2",
+obj.foo();
+
+/*
+I see... changing the example in the LS curiculum to use an arrow function as a function expression is 
+basically the same as defining the arrow function with "let" before it is passed into the function. 
+The arrow function, therefore, inherits its execution context from foo when its called on obj. THis 
+(no pun intended) is why arrow funcs are used in this situation.
+
+I suppose this is what happens when you pass in a function expression as a callback. 
+
+*/
+
+// => 1 undefined undefined
+// => 2 undefined undefined
+// => 3 undefined undefined
+
+let func = () => {
+  console.log(this.a);
 };
 
-obj.foo();
-// => hello world
-// => hello world
+obj = {
+  a: "hello",
+};
 
-let newFoo = obj.foo;
-
-newFoo();
-
-obj.foo.call(obj2);
+func.call(obj);
