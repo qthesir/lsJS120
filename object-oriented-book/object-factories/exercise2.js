@@ -22,7 +22,7 @@ function createSmartphone(brand, model, releaseYear) {
     battery: 100,
 
     displayInformation() {
-      return `This is an ${this.brand} ${this.model}, released ${this.releaseYear}.`;
+      return `${this.releaseYear} ${this.brand} ${this.model}.`;
     },
 
     checkBattery() {
