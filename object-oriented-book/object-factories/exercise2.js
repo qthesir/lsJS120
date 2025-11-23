@@ -26,7 +26,7 @@ function createSmartphone(brand, model, releaseYear) {
     },
 
     checkBattery() {
-      return `Battery remaining: ${this.battery}%`;
+      return `${this.brand} ${this.model} has ${this.battery}% battery remaining.`;
     },
   };
 }
