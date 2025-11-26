@@ -31,8 +31,28 @@ class Student {
   track() {
     return this.#track
   }
+
+  #revealStudentId() {
+    let studentId = database.getStudentId(this.#name)
+    console.log(studentId.idNumber)
+  }
 }
 
 let student = new Student('Nichola', 'Tesla', 'Rocketry')
 
 console.log(`${student.name().join(" ")} ${student.track()}`)
+
+class MyClass {
+  myPublic() {
+    return this.#myPrivate()
+  }
+
+  #myPrivate() {
+    console.log('This is a private method')
+  }
+}
+
+let fooA = new MyClass()
+
+fooA.myPublic()
+// fooA.#myPrivate()
