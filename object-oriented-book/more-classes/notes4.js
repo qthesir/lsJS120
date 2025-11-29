@@ -31,42 +31,46 @@ let gerald = new UndergraduateStudent("Gerald");
 GraduateStudent.displayCounter();
 UndergraduateStudent.displayCounter();
 
+// Solution 2
+
 class Student2 {
+  static #counts = new Map();
+
   constructor(name) {
     this.name = name;
+    let ctor = this.constructor;
+    let currentCount = Student2.#counts.get(ctor) ?? 0;
+    Student2.#counts.set(ctor, currentCount + 1);
   }
-  static counter = {
-    UndergraduateStudents: 0,
-    GraduateStudents: 0,
-  };
 
-  static displayCounter() {
-    console.log(
-      "Undergraduate Student count: ",
-      Student2.counter.UndergraduateStudents
-    );
-    console.log("Graduate Student count: ", Student2.counter.GraduateStudents);
+  static count() {
+    return Student2.#counts.get(this) ?? 0;
+  }
+
+  static totalCount() {
+    let total = 0;
+    for (const n of Student2.#counts.values()) {
+      total += n;
+    }
+    return total;
   }
 }
 
 class GraduateStudent2 extends Student2 {
-
   constructor(name) {
     super(name);
-    Student2.counter.GraduateStudents += 1;
   }
 }
 class UndergraduateStudent2 extends Student2 {
-
   constructor(name) {
     super(name);
-    Student2.counter.UndergraduateStudents += 1;
   }
 }
 
 let ken2 = new GraduateStudent2("Ken");
 let gerald2 = new UndergraduateStudent2("Gerald");
 
-Student2.displayCounter();
+Student2.count();
+Student2.totalCount();
 
 // Can you make static fields and methods private?
