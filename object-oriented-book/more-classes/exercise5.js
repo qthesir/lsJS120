@@ -1,27 +1,27 @@
 class MathUtils {
-  static add(number1, number2) {
-    return number1 + number2;
+  static add(a, b) {
+    return a + b;
   }
 
-  static substract(number1, number2) {
-    return number1 - number2;
+  static substract(a, b) {
+    return a - b;
   }
 
-  static multiply(number1, number2) {
-    return number1 * number2;
+  static multiply(a, b) {
+    return a * b;
   }
 
-  static divide(number1, number2) {
-    if (number2 === 0) {
+  static divide(a, b) {
+    if (b === 0) {
       throw new RangeError("Division by 0");
     } else {
-      return number1 / number2;
+      return a / b;
     }
   }
 }
 
 console.log(MathUtils.add(5, 3));
-console.log(MathUtils.substract(5, 3));
+console.log(MathUtils.substract(10, 4));
 console.log(MathUtils.multiply(6, 7)); // 42
 console.log(MathUtils.divide(20, 5)); // 4
 console.log(MathUtils.divide(10, 0)); // RangeError: Division by zero
