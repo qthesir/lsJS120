@@ -1,17 +1,19 @@
 class BankAccount {
-  #balance;
+  #balance = 0;
 
   #checkBalance() {
-    return this.#balance;
+    console.log(`Current balance is: $${this.#balance}`);
   }
 
-  deposit(deposit) {
-    this.#balance += deposit;
+  deposit(amount) {
+    this.#balance += amount;
+    this.#checkBalance();
   }
 
-  withdraw(withdrawal) {
-    if (this.#checkBalance() - withdrawal > 0) {
-      this.#balance -= withdrawal;
+  withdraw(amount) {
+    if (amount <= this.#balance) {
+      this.#balance -= amount;
+      this.#checkBalance();
     } else {
       throw new RangeError("Insufficient Funds");
     }
