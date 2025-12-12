@@ -38,7 +38,11 @@ console.log(
 );
 console.log(Cat.prototype instanceof Animal);
 
+console.log(Object.getPrototypeOf(Animal.prototype) === Object.prototype);
+
 // The class prototypes (not Cat.prototype, but Cat.getPrototypeOf) seem to inherit from the class
 // constructor itself, whereas the Cat.prototype is the chain of whats specifically inherited by the
 // instance, although the prototype of "Cat" in the above scenario seems to be of type Animal. Yes...
 // Thats correct. The object prototype on the instance Cheddar is, in fact, an instanceof Animal.
+
+
