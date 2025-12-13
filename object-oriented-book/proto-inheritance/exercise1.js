@@ -22,11 +22,11 @@ function Smartphone(brand, model, releaseYear) {
 }
 
 Smartphone.prototype.displayInformation = function () {
-  console.log(`${this.brand} ${this.model} ${this.releaseYear}`);
+  console.log(`${this.brand} ${this.model} ${this.releaseYear}%`);
 };
 
 Smartphone.prototype.checkBattery = function () {
-  console.log(`Battery level: ${this.battery}`);
+  console.log(`Battery level: ${this.battery}%`);
 };
 
 let iPhone = new Smartphone("Apple", "iPhone 12", "2020");
