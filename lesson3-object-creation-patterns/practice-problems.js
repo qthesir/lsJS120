@@ -36,15 +36,20 @@ The requirements for the factory function are as follows:
 - The default value for the phone service is 3000, and the internet service is 5500 (in cents, of course!).
 - The function takes an object argument whose attributes override the default values.
 
-Aside: Requirements aren't totally clear here. Does the function take an object argument, and then override the 
+Aside: Requirements aren't totally clear here. Does the function take an object argument, and then override the whole
+object, or just the values specified in the object?
+
+Based on the output of the program, it seems like the problem wants only to override the values inside of the object,
+not the original. Code below solves this problem. 
 */
 
-function createInvoice(invoiceValues = { phone: 3000, internet: 5500 }) {
+function createInvoice(invoiceValues = {}) {
   return {
-    ...invoiceValues,
+    phone: invoiceValues.phone || 3000,
+    internet: invoiceValues.internet || 5500,
 
     total() {
-      return this.phone + this.internet;
+      return this.phone + this.internet
     },
   };
 }
@@ -59,6 +64,15 @@ function invoiceTotal(invoices) {
   return total;
 }
 
-let invoice = createInvoice();
+let invoices = [];
+invoices.push(createInvoice());
+invoices.push(createInvoice({ internet: 6500 }));
+invoices.push(createInvoice({ phone: 2000 }));
+invoices.push(
+  createInvoice({
+    phone: 1000,
+    internet: 4500,
+  })
+);
 
-console.log(invoice.total());
+console.log(invoiceTotal(invoices));
