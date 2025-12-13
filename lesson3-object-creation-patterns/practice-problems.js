@@ -49,7 +49,13 @@ function createInvoice(phone = 3000, internet = 5500) {
 }
 
 function invoiceTotal(invoices) {
-  
+  let total = 0;
+
+  for (let i = 0; i < invoices.length; i++) {
+    total += invoices[i].total();
+  }
+
+  return total;
 }
 
 let invoice = createInvoice();
