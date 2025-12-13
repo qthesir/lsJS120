@@ -21,7 +21,7 @@ export default defineConfig([{
         globals: {
             ...globals.browser,
             ...globals.jest,
-            ...globals.jquery,
+            ...globals.jqery,
             ...globals.node,
             alert: true,
             define: true,
