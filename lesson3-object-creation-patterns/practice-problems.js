@@ -35,15 +35,16 @@ The requirements for the factory function are as follows:
 - It returns an invoice object, with phone and internet properties, and a total method.
 - The default value for the phone service is 3000, and the internet service is 5500 (in cents, of course!).
 - The function takes an object argument whose attributes override the default values.
+
+Aside: Requirements aren't totally clear here. Does the function take an object argument, and then override the 
 */
 
-function createInvoice(phone = 3000, internet = 5500) {
+function createInvoice(invoiceValues = { phone: 3000, internet: 5500 }) {
   return {
-    phone,
-    internet,
+    ...invoiceValues,
 
     total() {
-      return phone + internet;
+      return this.phone + this.internet;
     },
   };
 }
