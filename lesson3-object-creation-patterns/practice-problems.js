@@ -47,9 +47,22 @@ function createInvoice(invoiceValues = {}) {
   return {
     phone: invoiceValues.phone ?? 3000,
     internet: invoiceValues.internet ?? 5500,
+    payments: 0,
 
     total() {
       return this.phone + this.internet;
+    },
+
+    addPayment(payment) {
+      this.payments = this.payments + payment.total();
+    },
+
+    addPayments(payments) {
+      this.payments = this.payments + paymentTotal(payments);
+    },
+
+    amountDue() {
+      return this.total() - this.payments;
     },
   };
 }
@@ -78,7 +91,7 @@ invoices.push(
 console.log(invoiceTotal(invoices)); // => 31000
 
 /*
-Now we can build a factory function to create payments. The function can take 
+4. Now we can build a factory function to create payments. The function can take 
 an object argument in one of 3 forms:
 
 Payment for one service, e.g., { internet: 1000 } or { phone: 1000 }.
@@ -118,6 +131,32 @@ payments.push(createPayment({ phone: 1000, internet: 4500 }));
 payments.push(createPayment({ amount: 10000 }));
 
 console.log(paymentTotal(payments)); // => 24000
+
+let invoice = createInvoice({
+  phone: 1200,
+  internet: 4000,
+});
+
+let payment1 = createPayment({ amount: 2000 });
+let payment2 = createPayment({
+  phone: 1000,
+  internet: 1200,
+});
+
+let payment3 = createPayment({ phone: 1000 });
+
+invoice.addPayment(payment1);
+invoice.addPayments([payment2, payment3]);
+
+console.log(invoice.amountDue());
+
+/*
+5. Update the createInvoice function so that it can add payment(s) to invoices. Use the 
+following code as a guideline:
+
+
+
+*/
 
 // Quick lesson here: The null coaelscing will only go to the default option if the evaluated value is
 // undefined or null. With the case of the || operator, it will short circuit if the value is falsy,
