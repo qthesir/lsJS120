@@ -47,22 +47,26 @@ function createInvoice(invoiceValues = {}) {
   return {
     phone: invoiceValues.phone ?? 3000,
     internet: invoiceValues.internet ?? 5500,
-    payments: 0,
+    payments: [],
 
     total() {
       return this.phone + this.internet;
     },
 
     addPayment(payment) {
-      this.payments = this.payments + payment.total();
+      this.payments.push(payment);
     },
 
     addPayments(payments) {
-      this.payments = this.payments + paymentTotal(payments);
+      payments.forEach(this.addPayment, this);
+    },
+
+    paymentTotal() {
+      return this.payments.reduce((sum, payment) => sum + payment.total(), 0);
     },
 
     amountDue() {
-      return this.total() - this.payments;
+      return this.total() - this.paymentTotal();
     },
   };
 }
