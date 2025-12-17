@@ -27,3 +27,9 @@ function Car2(args) {
 let car2 = new Car2(civicArgs);
 
 console.log(car2);
+
+if (car2 instanceof Car2) {
+  console.log("Its an instance of a car");
+} else {
+  console.log("Its not an instance of a car");
+}
