@@ -83,3 +83,31 @@ let b = new Circle(4);
 console.log(a.area().toFixed(2)); // => 28.27
 console.log(b.area().toFixed(2)); // => 50.27
 console.log(a.hasOwnProperty("area")); // => false
+
+/*
+4. What will the following code log to the console and why? 
+*/
+
+function Ninja() {
+  this.swung = true;
+}
+
+let ninja = new Ninja();
+
+Ninja.prototype.swingSword = function () {
+  return this.swung;
+};
+
+console.log(ninja.swingSword());
+
+/*
+The above code will log 'true', as you would expect. When the method swingSword is added to the 
+Ninja.prototype property on line 97, this means that the ninja instance object defined on line 95 
+will also be able to access swingSword, because its prototype references the object 
+Ninja.prototype. However, if Ninja.prototype were set to a new object, then the prototype 
+link would be broken, and any updates to the Ninja.prototype would not be reflected in ninja. 
+*/
+
+/*
+
+*/
