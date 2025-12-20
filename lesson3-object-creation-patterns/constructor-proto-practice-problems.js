@@ -182,3 +182,53 @@ console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(ninjaA)));
 // constructor to create a brand new object. So the object actually has the constructor function associated
 // with its prototype... Huh. Although, the tactic I used did create an object in the structure of the
 // ninja.
+
+/*
+8. Since a constructor is just a function, you can call it without the new operator. However, that can lead 
+to unexpected results and errors, especially for inexperienced programmers. Write a constructor function that 
+you can use with or without the new operator. The function should return the same result with either form. 
+Use the code below to check your solution:
+*/
+
+// function User(first, last) {
+//   return {
+//     name: `${first} ${last}`
+//   }
+// }
+
+function User(first, last) {
+  if (this instanceof User) {
+    this.name = `${first} ${last}`;
+  } else {
+    return {
+      name: `${first} ${last}`,
+    };
+  }
+}
+
+function User2(first, last) {
+  if (!(this instanceof User)) return new User(first, last);
+
+  this.name = first + " " + last;
+}
+
+let name = "Jane Doe";
+let user1 = new User("John", "Doe");
+let user2 = User("John", "Doe");
+
+console.log(name); // => Jane Doe
+console.log(user1.name); // => John Doe
+console.log(user2.name); // => John Doe
+
+/*
+There is a few different ways of accomplishing this. Like the hint suggested, you could use the .constructor property
+to check if User is the constructor of the this, or instanceof to check if this is an instance of User. If it is, then
+you set the object properties normally. If it isn't, then you return an object literal with the same values. Alternatively,
+which is what I did first, is you could simply return an object literal. That object literal will be returned every
+time regardless of whether new is used or not. This is the one exception where the object return is overwritten. 
+
+I've written user2 to capture the LS solution. This is probably better. If you don't have the new keyword, then
+you call the function again with the new keyword, so it basically is always a constructor and cannot be used as 
+an ordinary function. Wouldn't this be what you want in most cases? To make them scope safe? Apparently, many of 
+JavaScripts built in constructors are scope safe. Object, Array, RegExp... but not String. Strange. 
+*/
