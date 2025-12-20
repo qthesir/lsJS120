@@ -137,20 +137,48 @@ to a new object, the reference between the ninja instance object and the Ninja f
 6. Implement the method described in the comments below:
 */
 
-function Ninja() {
-  this.swung = false;
+// function Ninja() {
+//   this.swung = false;
+// }
+
+// // Add a swing method to the Ninja prototype which
+// // modifies `swung` and returns the calling object
+
+// Ninja.prototype.swing = function () {
+//   this.swung = true;
+//   return this;
+// };
+
+// let ninjaA = new Ninja();
+// let ninjaB = new Ninja();
+
+// console.log(ninjaA.swing().swung); // logs `true`
+// console.log(ninjaB.swing().swung); // logs `true`
+
+/*
+7. In this problem, we'll ask you to create a new instance of an object, without having direct 
+access to the constructor function:
+*/
+
+let ninjaA;
+
+{
+  const Ninja = function () {
+    this.swung = false;
+  };
+
+  ninjaA = new Ninja();
 }
 
-// Add a swing method to the Ninja prototype which
-// modifies `swung` and returns the calling object
+// create a `ninjaB` object here; don't change anything else
 
-Ninja.prototype.swing = function () {
-  this.swung = true;
-  return this;
-};
+let ninjaB = new ninjaA.constructor();
 
-let ninjaA = new Ninja();
-let ninjaB = new Ninja();
+console.log(ninjaA.constructor === ninjaB.constructor); // => true
+console.log(Object.getOwnPropertyNames(Object.getPrototypeOf(ninjaA)));
 
-console.log(ninjaA.swing().swung); // logs `true`
-console.log(ninjaB.swing().swung); // logs `true`
+// Ah I get it... I didn't really solve what the problem was asking. I kinda cheated and created a new object,
+// and set its constructor to equal the constructor on ninjaA. I didn't realize I could have just used the
+// constructor to create a brand new object. So the object actually has the constructor function associated
+// with its prototype... Huh. Although, the tactic I used did create an object in the structure of the
+// ninja.
