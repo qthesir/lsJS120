@@ -88,17 +88,17 @@ console.log(a.hasOwnProperty("area")); // => false
 4. What will the following code log to the console and why? 
 */
 
-function Ninja() {
-  this.swung = true;
-}
+// function Ninja() {
+//   this.swung = true;
+// }
 
-let ninja = new Ninja();
+// let ninja = new Ninja();
 
-Ninja.prototype.swingSword = function () {
-  return this.swung;
-};
+// Ninja.prototype.swingSword = function () {
+//   return this.swung;
+// };
 
-console.log(ninja.swingSword());
+// console.log(ninja.swingSword());
 
 /*
 The above code will log 'true', as you would expect. When the method swingSword is added to the 
@@ -109,5 +109,44 @@ link would be broken, and any updates to the Ninja.prototype would not be reflec
 */
 
 /*
-
+5. What will the following code output and why? Try to answer without running the code.
 */
+
+// function Ninja() {
+//   this.swung = true;
+// }
+
+// let ninja = new Ninja();
+
+// Ninja.prototype = {
+//   swingSword: function() {
+//     return this.swung;
+//   },
+// };
+
+// console.log(ninja.swingSword());
+
+/*
+In this case, the console will log a type error, saying "ninja.swingSword is not a function" or something along
+those lines. This is because Ninja.prototype is set to a brand new object on line 121. ninja, declared and
+initialized on line 119, references the original Ninja.prototype object. When Ninja.prototype is initialized 
+to a new object, the reference between the ninja instance object and the Ninja function prototype is broken. 
+*/
+
+/*
+6. Implement the method described in the comments below:
+*/
+
+function Ninja() {
+  this.swung = false;
+}
+
+// Add a swing method to the Ninja prototype which
+// modifies `swung` and returns the calling object
+
+let ninjaA = new Ninja();
+let ninjaB = new Ninja();
+
+console.log(ninjaA.swing().swung);      // logs `true`
+console.log(ninjaB.swing().swung);      // logs `true`
+
