@@ -8,5 +8,9 @@ array2.forEach((ele) => console.log(ele));
 console.log(array[0]);
 console.log(array[1]);
 
-console.log(array.length)
-console.log(array.length)
+console.log(array.length);
+console.log(array.length);
+
+let bool = new Boolean(false);
+console.log(bool, typeof bool);
+console.log(bool ? true : falses);
