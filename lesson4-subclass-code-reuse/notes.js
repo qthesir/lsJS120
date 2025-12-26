@@ -1,3 +1,5 @@
+// OLOO (Objects Linking to Other Objects)
+
 let carPrototype = {
   start() {
     this.started = true;
@@ -11,10 +13,10 @@ let carPrototype = {
     this.make = make;
     this.model = model;
     this.year = year;
+    return this
   },
 };
 
-let car1 = Object.create(carPrototype);
-car1.init("Toyota", "Camry", 2016);
+let car1 = Object.create(carPrototype).init("Toyota", "Camry", 2016);
 
 console.log(car1);
