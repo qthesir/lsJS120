@@ -44,9 +44,11 @@ RPSGame.prototype = {
   displayWelcomeMessage() {
     console.log("Welcome to Rock, Paper, Scissors!");
   },
+
   displayGoodbyeMessage() {
     console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
   },
+
   displayWinner() {
     console.log(`You chose: ${this.human.move}`);
     console.log(`The computer chose: ${this.computer.move}`);
@@ -70,11 +72,13 @@ RPSGame.prototype = {
       console.log("It's a tie");
     }
   },
+
   playAgain() {
     console.log("Would you like to play again? (y/n)");
     let answer = readline.question();
     return answer.toLowerCase()[0] === "y";
   },
+
   play() {
     this.displayWelcomeMessage();
     while (true) {
