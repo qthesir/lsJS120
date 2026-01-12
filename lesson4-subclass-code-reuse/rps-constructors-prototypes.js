@@ -5,7 +5,7 @@ function Player() {
 }
 
 function Computer() {
-  Player.call(this)
+  Player.call(this);
 }
 
 Computer.prototype = Object.create(Player.prototype);
@@ -14,83 +14,85 @@ Computer.prototype.choose = function () {
   const choices = ["rock", "paper", "scissors"];
   let randomIndex = Math.floor(Math.random() * choices.length);
   this.move = choices[randomIndex];
-}; 
+};
 
 function Human() {
-  Player.call(this)
-} 
+  Player.call(this);
+}
 
-Human.prototype = Object.create(Player.prototype)
-Human.prototype.constructor = Human
+Human.prototype = Object.create(Player.prototype);
+Human.prototype.constructor = Human;
 Human.prototype.choose = function () {
   let choice;
 
   while (true) {
-   console.log('Please choose rock, paper, or scissors:');
-   choice = readline.question(); 
-   if (['rock', 'paper','scissors'].includes(choice)) break;
-   console.log('Sorry, invalid choice.'); 
+    console.log("Please choose rock, paper, or scissors:");
+    choice = readline.question();
+    if (["rock", "paper", "scissors"].includes(choice)) break;
+    console.log("Sorry, invalid choice.");
   }
 
-  this.move = choice
-}
+  this.move = choice;
+};
 
 function RPSGame() {
-  this.human = new Human()
-  this.computer = new Computer() 
-} 
-
-RPSGame.prototype.displayWelcomeMessage = function () {
-  console.log('Welcome to Rock, Paper, Scissors!');
+  this.human = new Human();
+  this.computer = new Computer();
 }
 
-RPSGame.prototype.displayGoodbyeMessage = function () {
-  console.log('Thanks for playing Rock, Paper, Scissors. Goodbye!');
-}
+RPSGame.prototype = {
+  displayWelcomeMessage() {
+    console.log("Welcome to Rock, Paper, Scissors!");
+  },
+  displayGoodbyeMessage() {
+    console.log("Thanks for playing Rock, Paper, Scissors. Goodbye!");
+  },
+  displayWinner() {
+    console.log(`You chose: ${this.human.move}`);
+    console.log(`The computer chose: ${this.computer.move}`);
 
-RPSGame.prototype.displayWinner = function () {
-  console.log(`You chose: ${this.human.move}`);
-  console.log(`The computer chose: ${this.computer.move}`);
+    let humanMove = this.human.move;
+    let computerMove = this.computer.move;
 
-  let humanMove = this.human.move;
-  let computerMove = this.computer.move;
+    if (
+      (humanMove === "rock" && computerMove === "scissors") ||
+      (humanMove === "paper" && computerMove === "rock") ||
+      (humanMove === "scissors" && computerMove === "paper")
+    ) {
+      console.log("You win!");
+    } else if (
+      (humanMove === "rock" && computerMove === "paper") ||
+      (humanMove === "paper" && computerMove === "scissors") ||
+      (humanMove === "scissors" && computerMove === "rock")
+    ) {
+      console.log("Computer wins!");
+    } else {
+      console.log("It's a tie");
+    }
+  },
+  playAgain() {
+    console.log("Would you like to play again? (y/n)");
+    let answer = readline.question();
+    return answer.toLowerCase()[0] === "y";
+  },
+  play() {
+    this.displayWelcomeMessage();
+    while (true) {
+      this.human.choose();
+      this.computer.choose();
+      this.displayWinner();
+      if (!this.playAgain()) break;
+    }
 
-  if ((humanMove === 'rock' && computerMove === 'scissors') ||
-      (humanMove === 'paper' && computerMove === 'rock') ||
-      (humanMove === 'scissors' && computerMove === 'paper')) {
-    console.log('You win!');
-  } else if ((humanMove === 'rock' && computerMove === 'paper') ||
-             (humanMove === 'paper' && computerMove === 'scissors') ||
-             (humanMove === 'scissors' && computerMove === 'rock')) {
-    console.log('Computer wins!');
-  } else {
-    console.log("It's a tie");
-  }
-}
+    this.displayGoodbyeMessage();
+  },
+};
 
-RPSGame.prototype.playAgain = function () {
-  console.log('Would you like to play again? (y/n)');
-  let answer = readline.question();
-  return answer.toLowerCase()[0] === 'y';
-}
+RPSGame.prototype.constructor = RPSGame;
 
-RPSGame.prototype.play = function () {
-  this.displayWelcomeMessage();
-  while (true) {
-    this.human.choose();
-    this.computer.choose();
-    this.displayWinner();
-    if (!this.playAgain()) break;
-  }
+const rpsGame = new RPSGame();
 
-  this.displayGoodbyeMessage();
-} 
+rpsGame.play();
 
-const rpsGame = new RPSGame
-
-rpsGame.play()
-
-
-
-// Shit... Can't quite remember what to do for inheriting the property from the parent class. How to 
-// pass that through? Maybe call the other constructor? 
+// Shit... Can't quite remember what to do for inheriting the property from the parent class. How to
+// pass that through? Maybe call the other constructor?
