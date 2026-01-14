@@ -24,30 +24,30 @@ class Truck {
 }
 Truck.prototype = Object.assign(Truck.prototype, Speed);
 
-let car = new Car
-let truck = new Truck 
+let car = new Car();
+let truck = new Truck();
 
-car.goFast()
-truck.goFast()
-car.goSlow()
-truck.goVerySlow()
+car.goFast();
+truck.goFast();
+car.goSlow();
+truck.goVerySlow();
 
-console.log('goFast' in car)
-console.log('goFast' in truck) 
-console.log('goFast' in Car.prototype)
-console.log('goFast' in Truck.prototype)
+console.log("goFast" in car);
+console.log("goFast" in truck);
+console.log("goFast" in Car.prototype);
+console.log("goFast" in Truck.prototype);
 
 // Trying to use my brain to come up with the pattern. Having trouble rembembering the pattern....
 // Is it Object.create?
 
 /*
-In the last question, we used a mix-in named Speed that contained a goFast method. We 
+2. In the last question, we used a mix-in named Speed that contained a goFast method. We 
 included the mix-in in the Car class and then called the goFast method from an instance of the Car class. 
 You may have noticed that the string printed when we call goFast includes the name of the type of vehicle 
 we are using. How is that done?
 */
 
-console.log(Object.getOwnPropertyNames(car))
+console.log(Object.getOwnPropertyNames(car));
 
 /*
 When a new class or constructor function is defined and the prototype property is not overwritten, the 
@@ -60,4 +60,81 @@ which in this case is Car, which is the value logged to the console.
 
 Aside - how do you add an own method to a class or function and what was the name of that again? Cant 
 remember.
+
+STATIC method. And you use the static keyword in front of the function to define a static method. Very simple.
+*/
+
+/*
+3. Ben and Alyssa are working on a vehicle management system. Thus far, they have created classes named 
+Auto and Motorcycle to represent automobiles and motorcycles. After they noticed that the information and 
+calculations performed was common to both vehicle types, they decided to break out the commonality into a 
+separate class named WheeledVehicle. Their code, thus far, looks like this:
+*/
+
+const WheeledVehicle = {
+  tirePressure(tireIdx) {
+    return this.tires[tireIdx];
+  },
+
+  inflateTire(tireIdx, pressure) {
+    this.tires[tireIdx] = pressure;
+  },
+};
+
+class Vehicle {
+  constructor(kmTravelledPerLiter, fuelCapInLiter) {
+    this.fuelEfficiency = kmTravelledPerLiter;
+    this.fuelCap = fuelCapInLiter;
+  }
+
+  range() {
+    return this.fuelCap * this.fuelEfficiency;
+  }
+}
+
+class Auto extends Vehicle {
+  constructor() {
+    // the array represents tire pressure for four tires
+    super(50, 25.0);
+    this.tires = [30, 30, 32, 32];
+  }
+}
+
+Auto.prototype = Object.assign(Auto.prototype, WheeledVehicle);
+
+class Motorcycle extends Vehicle {
+  constructor() {
+    // array represents tire pressure for two tires
+    super(80, 8.0);
+    this.tires = [20, 20];
+  }
+}
+
+Motorcycle.prototype = Object.assign(Motorcycle.prototype, WheeledVehicle);
+
+// Their boss now wants them to incorporate a new type of vehicle: a Catamaran.
+
+class Catamaran extends Vehicle {
+  constructor(propellerCount, hullCount, kmTravelledPerLiter, fuelCapInLiter) {
+    // catamaran specific logic
+    super(kmTravelledPerLiter, fuelCapInLiter);
+    this.propellerCount = propellerCount;
+    this.hullCount = hullCount;
+  }
+}
+
+let catamaran = new Catamaran(4, 1, 10, 40);
+let motorcycle = new Motorcycle();
+console.log(catamaran.hullCount);
+console.log(motorcycle.tirePressure(1));
+/*
+This new class doesn't fit well with our existing class hierarchy: Catamarans don't have tires, and aren't 
+wheeled vehicles. However, we still want to share the code for tracking fuel efficiency and range. 
+Modify the class definitions and move code into a mix-in, as needed, to share code between the 
+Catamaran and the wheeled vehicle classes.
+*/
+
+/*
+Hm... Well, for the mix-in, I understand how to share the functions. The functions for tracking fuel 
+efficiency and range shoul d
 */
