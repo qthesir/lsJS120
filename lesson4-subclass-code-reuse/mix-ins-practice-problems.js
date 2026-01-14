@@ -47,8 +47,17 @@ You may have noticed that the string printed when we call goFast includes the na
 we are using. How is that done?
 */
 
-console.log(Object.getOwnPropertyNames(Car))
+console.log(Object.getOwnPropertyNames(car))
 
 /*
+When a new class or constructor function is defined and the prototype property is not overwritten, the 
+prototype will include a property called constructor, which returns the class or constructor function when
+referenced. The class or constructor has a property called name, and that name contains a string of the 
+variable name of the function. When the goFast method is called on an instance of car, this.constructor
+will go up to the function prototype (car's prototype) to get the value of the constructor, which is the 
+constructor function or class. Then, chaining the .name property returns the name of the function variable,
+which in this case is Car, which is the value logged to the console.
 
+Aside - how do you add an own method to a class or function and what was the name of that again? Cant 
+remember.
 */
