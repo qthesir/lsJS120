@@ -100,7 +100,7 @@ class Auto extends Vehicle {
   }
 }
 
-Auto.prototype = Object.assign(Auto.prototype, WheeledVehicle);
+Object.assign(Auto.prototype, WheeledVehicle);
 
 class Motorcycle extends Vehicle {
   constructor() {
@@ -110,9 +110,7 @@ class Motorcycle extends Vehicle {
   }
 }
 
-Motorcycle.prototype = Object.assign(Motorcycle.prototype, WheeledVehicle);
-
-// Their boss now wants them to incorporate a new type of vehicle: a Catamaran.
+Object.assign(Motorcycle.prototype, WheeledVehicle);
 
 class Catamaran extends Vehicle {
   constructor(propellerCount, hullCount, kmTravelledPerLiter, fuelCapInLiter) {
@@ -135,6 +133,23 @@ Catamaran and the wheeled vehicle classes.
 */
 
 /*
-Hm... Well, for the mix-in, I understand how to share the functions. The functions for tracking fuel 
-efficiency and range shoul d
+Hm... Well, for the mix-in, I understand how to share the functions.
+
+Thats what I did. I shared functions. But I wasn't able to easily create properties... Could I somehow extend this? 
+How can I extend the class in order to accomodate the properties? I only know how to mix in functions... 
+
+Hm. The LS solution is different than my solution, and I don't really like the way that LS did it. Each of these things 
+is a vehicle, and every vehicle uses gasoline. There are wheeled vehicles and aquatic vehicles, similar to flying birds and 
+swimming birds. If there were a special set of functions for the aquatic vehicles, then we would add a mix-in for those 
+aquatic vehicles. In the LS solution, if aquatic vehicles had a separate set of functions, you'd have to create a whole new class. 
+Well, on further reflection, this case is different than the flying birds case, because in the flying birds case, there were 
+birds that could both swim and fly. This is not the case with this example, where, for most conceivable consumer cases, there will
+not be a vehicle that is both a boat and wheeled (military is a different story). It still feels cleaner to do it the way I did. 
+
+Thoughts?
+
+... Got a really good LS bot response from that prompt. Very nice response. 
+
+Key thing here, that I now understand about the LS bot solution: The LS bot solution is extracting a specific set of shared 
+*behavior* that exists outside the class. For 
 */
