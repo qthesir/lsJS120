@@ -41,16 +41,23 @@ class Wedding {
   }
 
   preparations(preparers) {
-    preparers.forEach((preparer) => preparer.prepare(this));
+    preparers.forEach(
+      function (preparer) {
+        preparer.prepare(this);
+      }.bind(this)
+    );
   }
 }
 
 let chef = new Chef();
 let musician = new Musician();
 let decorator = new Decorator();
-let wedding = new Wedding('chicken', 'piano', 'balloons'); 
- 
+let wedding = new Wedding("chicken", "piano", "balloons");
+
 let preparers = [chef, musician, decorator];
 
 wedding.preparations(preparers);
 
+let whatever = {}
+
+console.log(whatever.prepare())
