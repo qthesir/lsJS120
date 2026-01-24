@@ -73,7 +73,13 @@ class Marker {
 }
 
 class Player {
-  constructor() {}
+  constructor(marker) {
+    this.marker = marker;
+  }
+
+  getMarker() {
+    return this.marker;
+  }
 
   Mark() {
     // We need a way to mark the board with this player's marker.
@@ -88,13 +94,13 @@ class Player {
 
 class Human extends Player {
   constructor() {
-    super();
+    super(Square.HUMAN_MARKER);
   }
 }
 
 class Computer extends Player {
   constructor() {
-    super();
+    super(Square.COMPUTER_MARKER);
   }
 }
 
@@ -115,9 +121,11 @@ class TTTGame {
       this.board.display();
 
       this.humanMoves();
+      this.board.display();
       if (this.gameOver()) break;
 
       this.computerMoves();
+      this.board.display();
       if (this.gameOver()) break;
 
       break;
@@ -145,11 +153,13 @@ class TTTGame {
       console.log("Sorry, that's not a valid choice.");
       console.log("");
     }
-    this.board.markSquareAt(choice, Square.HUMAN_MARKER);
+    this.board.markSquareAt(choice, this.human.getMarker());
   }
 
   computerMoves() {
     console.log("computer moves");
+    let choice = Math.ceil(Math.random() * 9);
+    this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
   displayResults() {}
