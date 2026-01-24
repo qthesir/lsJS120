@@ -13,6 +13,10 @@ class Square {
     this.marker = marker;
   }
 
+  isUnused() {
+    return this.marker === Square.UNUSED_SQUARE;
+  }
+
   toString() {
     return this.marker;
   }
@@ -34,6 +38,11 @@ class Board {
 
   markSquareAt(key, marker) {
     this.squares[key].setMarker(marker);
+  }
+
+  getOpenSquares() {
+    let keys = Object.keys(this.squares);
+    return keys.filter((key) => this.squares[key].isUnused());
   }
 
   display() {
@@ -63,12 +72,6 @@ class Row {
   constructor() {
     // Need some way to identify a row of 3 squares (to see if won)
     // But what about diagonal wins?
-  }
-}
-
-class Marker {
-  constructor() {
-    // Represents a players "piece" (X or O) on the board
   }
 }
 
@@ -121,14 +124,10 @@ class TTTGame {
       this.board.display();
 
       this.humanMoves();
-      this.board.display();
       if (this.gameOver()) break;
 
       this.computerMoves();
-      this.board.display();
       if (this.gameOver()) break;
-
-      break;
     }
 
     this.displayResults();
@@ -143,13 +142,14 @@ class TTTGame {
     console.log("human moves");
 
     let choice;
+    let validChoices = this.board.getOpenSquares();
+    const prompt = `Choose a square (${validChoices.join(", ")}): `;
 
     while (true) {
-      choice = readline.prompt(
-        "Please enter a number 1 through 9 to pick your move"
-      );
-      let integerValue = parseInt(choice, 10);
-      if (integerValue >= 1 && integerValue <= 9) break;
+      choice = readline.question(prompt);
+
+      if (validChoices.includes(choice)) break;
+
       console.log("Sorry, that's not a valid choice.");
       console.log("");
     }
@@ -157,8 +157,14 @@ class TTTGame {
   }
 
   computerMoves() {
-    console.log("computer moves");
-    let choice = Math.ceil(Math.random() * 9);
+    let validChoices = this.board.getOpenSquares();
+    let choice;
+
+    while (true) {
+      choice = ToString(Math.ceil(Math.random() * 9));
+      if (validChoices.includes(choice)) break;
+    }
+    
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
