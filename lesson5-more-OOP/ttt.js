@@ -88,11 +88,6 @@ class Player {
     // We need a way to mark the board with this player's marker.
     // How do we access the board?
   }
-
-  Play() {
-    // We need a way for each player to play the game
-    // Do we need access to the board?
-  }
 }
 
 class Human extends Player {
@@ -160,11 +155,10 @@ class TTTGame {
     let validChoices = this.board.getOpenSquares();
     let choice;
 
-    while (true) {
-      choice = ToString(Math.ceil(Math.random() * 9));
-      if (validChoices.includes(choice)) break;
-    }
-    
+    do {
+      choice = Math.ceil(Math.random() * 9).toString();
+    } while (!validChoices.includes(choice));
+
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
