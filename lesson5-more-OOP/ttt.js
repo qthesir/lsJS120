@@ -17,6 +17,10 @@ class Square {
     return this.marker === Square.UNUSED_SQUARE;
   }
 
+  getMarker() {
+    return this.marker;
+  }
+
   toString() {
     return this.marker;
   }
@@ -36,6 +40,14 @@ class Board {
     }
   }
 
+  countMarkersFor(player, keys) {
+    let markers = keys.filter((key) => {
+      return this.squares[key].getMarker() === player.getMarker();
+    });
+
+    return markers.length;
+  }
+
   markSquareAt(key, marker) {
     this.squares[key].setMarker(marker);
   }
@@ -43,6 +55,11 @@ class Board {
   getOpenSquares() {
     let keys = Object.keys(this.squares);
     return keys.filter((key) => this.squares[key].isUnused());
+  }
+
+  isFull() {
+    let unusedSquares = this.getOpenSquares();
+    return unusedSquares.length === 0;
   }
 
   display() {
@@ -65,13 +82,6 @@ class Board {
     );
     console.log(`     |     |`);
     console.log("");
-  }
-}
-
-class Row {
-  constructor() {
-    // Need some way to identify a row of 3 squares (to see if won)
-    // But what about diagonal wins?
   }
 }
 
@@ -103,16 +113,24 @@ class Computer extends Player {
 }
 
 class TTTGame {
+  static POSSIBLE_WINNING_ROWS = [
+    ["1", "2", "3"], // top row of board
+    ["4", "5", "6"], // center row of board
+    ["7", "8", "9"], // bottom row of board
+    ["1", "4", "7"], // left column of board
+    ["2", "5", "8"], // middle column of board
+    ["3", "6", "9"], // right column of board
+    ["1", "5", "9"], // diagonal: top-left to bottom-right
+    ["3", "5", "7"], // diagonal: bottom-left to top-right
+  ];
+
   constructor() {
-    // STUB
     this.board = new Board();
     this.human = new Human();
     this.computer = new Computer();
   }
 
   play() {
-    // SPIKE
-
     this.displayWelcomeMessage();
 
     while (true) {
@@ -162,14 +180,32 @@ class TTTGame {
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
-  displayResults() {}
+  displayResults() {
+    if (this.isWinner(this.human)) {
+      console.log("Congratulations, you won!");
+    } else if (this.isWinner(this.computer)) {
+      console.log("I won! I won! Take that, human!");
+    } else {
+      console.log("Its a tie! No one won.");
+    }
+  }
 
   displayGoodbyeMessage() {
     console.log("Thanks for playing Tic Tac Toe! Goodbye!");
   }
 
   gameOver() {
-    return false;
+    return this.board.isFull() || this.someoneWon();
+  }
+
+  someoneWon() {
+    return this.isWinner(this.human) || this.isWinner(this.computer);
+  }
+
+  isWinner(player) {
+    return TTTGame.POSSIBLE_WINNING_ROWS.some(
+      (row) => this.board.countMarkersFor(player, row) === 3
+    );
   }
 }
 
