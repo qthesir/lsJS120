@@ -83,6 +83,13 @@ class Board {
     console.log(`     |     |`);
     console.log("");
   }
+
+  displayWithClear() {
+    console.clear();
+    console.log("");
+    console.log("");
+    this.display();
+  }
 }
 
 class Player {
@@ -133,27 +140,30 @@ class TTTGame {
   play() {
     this.displayWelcomeMessage();
 
-    while (true) {
-      this.board.display();
+    this.board.display();
 
+    while (true) {
       this.humanMoves();
       if (this.gameOver()) break;
 
       this.computerMoves();
       if (this.gameOver()) break;
+
+      this.board.displayWithClear();
     }
 
+    this.board.displayWithClear();
     this.displayResults();
     this.displayGoodbyeMessage();
   }
 
   displayWelcomeMessage() {
+    console.clear();
     console.log("Welcome to Tic Tac Toe!");
+    console.log("");
   }
 
   humanMoves() {
-    console.log("human moves");
-
     let choice;
     let validChoices = this.board.getOpenSquares();
     const prompt = `Choose a square (${validChoices.join(", ")}): `;
