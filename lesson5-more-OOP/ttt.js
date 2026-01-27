@@ -100,11 +100,6 @@ class Player {
   getMarker() {
     return this.marker;
   }
-
-  Mark() {
-    // We need a way to mark the board with this player's marker.
-    // How do we access the board?
-  }
 }
 
 class Human extends Player {
