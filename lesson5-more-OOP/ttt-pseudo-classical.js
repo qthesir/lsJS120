@@ -14,7 +14,7 @@ Square.prototype.setMarker = function (marker) {
 Square.prototype.isUnused = function () {
   return this.marker === Square.UNUSED_SQUARE;
 };
-Square.prototype.getMarket = function () {
+Square.prototype.getMarker = function () {
   return this.marker;
 };
 Square.prototype.toString = function () {
@@ -31,6 +31,7 @@ function Board() {
 
 Board.prototype.countMarkersFor = function (player, keys) {
   let markers = keys.filter((key) => {
+    debugger;
     return this.squares[key].getMarker() === player.getMarker();
   });
 
