@@ -142,7 +142,44 @@ TTTGame.prototype.displayWelcomeMessage = function () {
 TTTGame.prototype.humanMoves = function () {
   let choice;
   let validChoices = this.board.getOpenSquares();
-  const prompt = `Choose a square (${validChoices.join(", ")}): `;
+
+  const joinOr = (squares, delimeter = ",", finalWord = "or") => {
+    if (squares.length === 1) return String(squares[0]);
+
+    let string = String(squares[0] + delimeter + " ");
+
+    for (let counter = 1; counter < squares.length; counter++) {
+      if (counter === squares.length - 2) {
+        string += String(squares[counter]) + delimeter + " " + finalWord + " ";
+      } else if (counter === squares.length - 1) {
+        string += String(squares[counter]);
+      } else {
+        string += String(squares[counter]) + delimeter + " ";
+      }
+    }
+
+    return string;
+  };
+
+  /*
+    Notes here
+
+    The problem is asking for a function that accepts an array, a delimiter, and a final word as arguments in order to 
+    display the tic tac toe board with a custom delimeter and include a final word. This would be a complete string as 
+    a return value. Man... Having some trouble remembering how to do this. 
+
+    I guess I could use a reduce to construct the new string, going through each of the values individually, and then using 
+    the final word prior to the last value. I could also join the strings together, and then add the string at the end.
+
+    I could successive build the string. That is, I could create an algorithm that builds a string with each number in the 
+    array. With the first value, it will just use the number. With the succeeding values, it will add the number plus the delimeter and a space. 
+    With the second to last value, it will include the delimiter AND the final word. 
+
+    Lets try that.
+
+  */
+
+  const prompt = `Choose a square (${joinOr(validChoices)}): `;
 
   while (true) {
     choice = readline.question(prompt);
