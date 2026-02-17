@@ -28,12 +28,10 @@ class Square {
 
 class Board {
   constructor() {
-    // STUBS
-    // We need a way to model the 3x3 grid
-    // What data type should we use. An array? An Object?
-    // What should the data structure store? Strings, nubmer, square objects?
-    // Perhaps the board can store rows, which stores squares, which stores markers.
+    this.reset();
+  }
 
+  reset() {
     this.squares = {};
     for (let counter = 1; counter <= 9; counter++) {
       this.squares[counter] = new Square();
@@ -135,6 +133,17 @@ class TTTGame {
   play() {
     this.displayWelcomeMessage();
 
+    while (true) {
+      this.playOneGame();
+
+      if (!this.playAgain()) break;
+    }
+
+    this.displayGoodbyeMessage();
+  }
+
+  playOneGame() {
+    this.board.reset();
     this.board.display();
 
     while (true) {
@@ -149,7 +158,6 @@ class TTTGame {
 
     this.board.displayWithClear();
     this.displayResults();
-    this.displayGoodbyeMessage();
   }
 
   displayWelcomeMessage() {
@@ -161,7 +169,8 @@ class TTTGame {
   humanMoves() {
     let choice;
     let validChoices = this.board.getOpenSquares();
-    const prompt = `Choose a square (${validChoices.join(", ")}): `;
+
+    const prompt = `Choose a square (${TTTGame.joinOr(validChoices)}): `;
 
     while (true) {
       choice = readline.question(prompt);
@@ -172,6 +181,26 @@ class TTTGame {
       console.log("");
     }
     this.board.markSquareAt(choice, this.human.getMarker());
+  }
+
+  static joinOr(squares, delimeter = ",", finalWord = "or") {
+    if (squares.length === 1) return String(squares[0]);
+    if (squares.length === 2)
+      return String(squares[0] + finalWord + squares[1]);
+
+    let string = String(squares[0] + delimeter + " ");
+
+    for (let counter = 1; counter < squares.length; counter++) {
+      if (counter === squares.length - 2) {
+        string += String(squares[counter]) + delimeter + " " + finalWord + " ";
+      } else if (counter === squares.length - 1) {
+        string += String(squares[counter]);
+      } else {
+        string += String(squares[counter]) + delimeter + " ";
+      }
+    }
+
+    return string;
   }
 
   computerMoves() {
@@ -212,7 +241,27 @@ class TTTGame {
       (row) => this.board.countMarkersFor(player, row) === 3
     );
   }
+
+  playAgain() {
+    let answer;
+    let validAnswers = ["y", "n"];
+
+    const prompt = "Play again (y/n)? ";
+
+    while (true) {
+      answer = readline.question(prompt).toLowerCase();
+
+      if (validAnswers.includes(answer)) break;
+
+      console.log("Sorry, that's not a valid choice.");
+    }
+
+    console.clear();
+    return answer === "y";
+  }
 }
 
 let game = new TTTGame();
 game.play();
+
+// Playing again also needs to reset the games state
