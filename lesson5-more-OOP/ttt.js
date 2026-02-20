@@ -219,7 +219,16 @@ class TTTGame {
 
   computerMoves() {
     let validChoices = this.board.getOpenSquares();
-    let choice;
+    let choice = this.findDefensiveOpportunity();
+
+    while (!validChoices.includes(choice)) {
+      choice = Math.ceil(Math.random() * 9).toString();
+    }
+
+    this.board.markSquareAt(choice, this.computer.getMarker());
+  }
+
+  findDefensiveOpportunity() {
     let opportunitySquare;
 
     for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
@@ -227,18 +236,11 @@ class TTTGame {
         this.human,
         TTTGame.POSSIBLE_WINNING_ROWS[i]
       );
-      console.log(opportunitySquare);
+
       if (opportunitySquare) {
-        choice = opportunitySquare.toString();
-        break;
+        return opportunitySquare;
       }
     }
-
-    while (!validChoices.includes(choice)) {
-      choice = Math.ceil(Math.random() * 9).toString();
-    }
-
-    this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
   displayResults() {
@@ -317,4 +319,11 @@ Lets start over. What do I need in order to make an AI defense strategy?
 - IF a position is not identified, then the computer should make a move at random. 
 
 I could use the "getMarkersAt" function in order to determine if there are two markers or not. 
+
+The more I read my code, the more I become familiar with it, but damn I do not like what I just wrote. It isn't intuitive. Not
+one bit. Fuck. I need to write a better solution. Or maybe I just use the LS solution. 
+
+Why was this so difficult? I really don't know. 
+
+I suppose I could abstract the function for the computer selecting an opportunity portion. 
 */
