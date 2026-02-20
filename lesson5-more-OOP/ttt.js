@@ -46,6 +46,27 @@ class Board {
     return markers.length;
   }
 
+  getOpportunitySquare(player, keys) {
+    console.log(keys);
+    let relevantSquares = Object.entries(this.squares).filter(([index, _]) =>
+      keys.includes(index)
+    );
+
+    console.log(relevantSquares);
+
+    let isOtherSquareOpen = relevantSquares.some(([_, square]) =>
+      square.isUnused()
+    );
+
+    console.log(isOtherSquareOpen);
+
+    if (this.countMarkersFor(player, keys) === 2 && isOtherSquareOpen) {
+      return relevantSquares.filter(([_, square]) => square.isUnused())[0][0];
+    }
+
+    return undefined;
+  }
+
   markSquareAt(key, marker) {
     this.squares[key].setMarker(marker);
   }
@@ -83,7 +104,7 @@ class Board {
   }
 
   displayWithClear() {
-    console.clear();
+    // console.clear();
     console.log("");
     console.log("");
     this.display();
@@ -206,10 +227,25 @@ class TTTGame {
   computerMoves() {
     let validChoices = this.board.getOpenSquares();
     let choice;
+    let opportunitySquare;
 
-    do {
+    for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
+      opportunitySquare = this.board.getOpportunitySquare(
+        this.human,
+        TTTGame.POSSIBLE_WINNING_ROWS[i]
+      );
+      console.log(opportunitySquare);
+      if (opportunitySquare) {
+        choice = opportunitySquare.toString();
+        break;
+      }
+    }
+
+    while (!validChoices.includes(choice)) {
       choice = Math.ceil(Math.random() * 9).toString();
-    } while (!validChoices.includes(choice));
+    }
+
+    console.log(choice);
 
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
@@ -265,3 +301,29 @@ let game = new TTTGame();
 game.play();
 
 // Playing again also needs to reset the games state
+// Computer needs to be able to detect a threat. That is, a situation where its about to lose the game.
+// How would it do that? Well, at a basic level, if it has two out of the 3 required for any given winning
+// strategy, then it needs to fill in that 4th square. It needs to do this every time it takes a turn. I
+// suppose this would be in the computer turn logic. We could have a "calculate move" function that lives on the
+// computer object. It also needs to be able to use the board... So the function will take the board as an
+// argument. So the computer move is still dealing with the orchestration, which is where the board object
+// is located. But do I just put in this whole board object to the computer, and then use its methods from there?
+// Because the board object has the methods. I do kind of need them, yes, because i need to return the value of countMarkersFor
+// I would also need the human player object. But I could also pass the return value of count markers for, and then just use
+// the static value on TTTGame, which has possible winning rows as a static value. You could use the specific logic of
+// counting the number of squares in each row, like the isWinner function does. But you need to return the specific
+// square, thats the goal. Maybe, what I do, is I create a function that returns the open squares of a particular row.
+// Or I just get the squares of the entire board (for the player), loop through the winning rows, and see if any of the
+// rows have 2 / 3. If they do (i could also remove that element for each one I find), then return the element.
+/*
+
+Lets start over. What do I need in order to make an AI defense strategy? 
+
+- Take each winning strategy
+- Cycle through each winning stragegy
+- See if the two out of the three winning squares are occupied by enemy positions.
+- IF a position is identified, the computer should move to block it
+- IF a position is not identified, then the computer should make a move at random. 
+
+I could use the "getMarkersAt" function in order to determine if there are two markers or not. 
+*/
