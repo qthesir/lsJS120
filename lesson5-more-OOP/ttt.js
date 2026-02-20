@@ -47,21 +47,14 @@ class Board {
   }
 
   getOpportunitySquare(player, keys) {
-    console.log(keys);
     let relevantSquares = Object.entries(this.squares).filter(([index, _]) =>
       keys.includes(index)
     );
 
-    console.log(relevantSquares);
+    let openSquare = relevantSquares.filter(([_, square]) => square.isUnused());
 
-    let isOtherSquareOpen = relevantSquares.some(([_, square]) =>
-      square.isUnused()
-    );
-
-    console.log(isOtherSquareOpen);
-
-    if (this.countMarkersFor(player, keys) === 2 && isOtherSquareOpen) {
-      return relevantSquares.filter(([_, square]) => square.isUnused())[0][0];
+    if (this.countMarkersFor(player, keys) === 2 && openSquare.length > 0) {
+      return openSquare[0][0];
     }
 
     return undefined;
@@ -104,7 +97,7 @@ class Board {
   }
 
   displayWithClear() {
-    // console.clear();
+    console.clear();
     console.log("");
     console.log("");
     this.display();
@@ -244,8 +237,6 @@ class TTTGame {
     while (!validChoices.includes(choice)) {
       choice = Math.ceil(Math.random() * 9).toString();
     }
-
-    console.log(choice);
 
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
