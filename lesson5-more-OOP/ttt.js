@@ -217,7 +217,11 @@ class TTTGame {
   }
 
   computerMoves() {
-    let choice = this.defensiveComputerMove();
+    let choice = this.offensiveComputerMove();
+
+    if (!choice) {
+      choice = this.defensiveComputerMove();
+    }
 
     if (!choice) {
       let validChoices = this.board.unusedSquares();
@@ -237,12 +241,20 @@ class TTTGame {
       let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
       opportunitySquare = this.board.getOpportunitySquare(this.human, row);
 
-      if (opportunitySquare) {
-        return opportunitySquare;
-      }
+      if (opportunitySquare) return opportunitySquare;
     }
 
     return null;
+  }
+
+  offensiveComputerMove() {
+    let opportunitySquare;
+
+    for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
+      let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
+      opportunitySquare = this.board.getOpportunitySquare(this.computer, row);
+      if (opportunitySquare) return opportunitySquare;
+    }
   }
 
   displayResults() {
