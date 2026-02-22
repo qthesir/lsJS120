@@ -46,15 +46,19 @@ class Board {
     return markers.length;
   }
 
-  getOpportunitySquare(player, keys) {
-    let relevantSquares = Object.entries(this.squares).filter(([index, _]) =>
-      keys.includes(index)
-    );
+  unusedSquares() {
+    let keys = Object.keys(this.squares);
+    return keys.filter((key) => this.isUnusedSquare(key));
+  }
 
-    let openSquare = relevantSquares.filter(([_, square]) => square.isUnused());
+  isUnusedSquare(key) {
+    return this.squares[key].isUnused();
+  }
 
-    if (this.countMarkersFor(player, keys) === 2 && openSquare.length > 0) {
-      return openSquare[0][0];
+  getOpportunitySquare(player, row) {
+    if (this.countMarkersFor(player, row) === 2) {
+      let index = row.findIndex((key) => this.isUnusedSquare(key));
+      if (index >= 0) return row[index];
     }
 
     return undefined;
@@ -64,13 +68,8 @@ class Board {
     this.squares[key].setMarker(marker);
   }
 
-  getOpenSquares() {
-    let keys = Object.keys(this.squares);
-    return keys.filter((key) => this.squares[key].isUnused());
-  }
-
   isFull() {
-    let unusedSquares = this.getOpenSquares();
+    let unusedSquares = this.unusedSquares();
     return unusedSquares.length === 0;
   }
 
@@ -182,7 +181,7 @@ class TTTGame {
 
   humanMoves() {
     let choice;
-    let validChoices = this.board.getOpenSquares();
+    let validChoices = this.board.unusedSquares();
 
     const prompt = `Choose a square (${TTTGame.joinOr(validChoices)}): `;
 
@@ -218,29 +217,32 @@ class TTTGame {
   }
 
   computerMoves() {
-    let validChoices = this.board.getOpenSquares();
-    let choice = this.findDefensiveOpportunity();
+    let choice = this.defensiveComputerMove();
 
-    while (!validChoices.includes(choice)) {
-      choice = Math.ceil(Math.random() * 9).toString();
+    if (!choice) {
+      let validChoices = this.board.unusedSquares();
+
+      do {
+        choice = Math.ceil(Math.random() * 9).toString();
+      } while (!validChoices.includes(choice));
     }
 
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
-  findDefensiveOpportunity() {
+  defensiveComputerMove() {
     let opportunitySquare;
 
     for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
-      opportunitySquare = this.board.getOpportunitySquare(
-        this.human,
-        TTTGame.POSSIBLE_WINNING_ROWS[i]
-      );
+      let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
+      opportunitySquare = this.board.getOpportunitySquare(this.human, row);
 
       if (opportunitySquare) {
         return opportunitySquare;
       }
     }
+
+    return null;
   }
 
   displayResults() {
@@ -326,4 +328,15 @@ one bit. Fuck. I need to write a better solution. Or maybe I just use the LS sol
 Why was this so difficult? I really don't know. 
 
 I suppose I could abstract the function for the computer selecting an opportunity portion. 
+
+I'm trying to understand the difference between the LS solutuion and my solution. Our solutions are actually pretty 
+damn similar, which is kind of crazy, but the main difference is the atRiskSquare function. I used the get opportunity square 
+instead, which is a board method that takes the player and the row in question and returns an opportunity. The element of my
+solution that I prefer over the LS solution is that mine will also work for finding the opportunity square for the 
+offensive move. But perhaps its cleaner / easier to read if you just separate the two? 
+
+What I do like is the addition of the isUnusedSquare method to the board object. This is more clear than what i was doing before.
+
+I also like the flow of logic in the computers move.
+
 */
