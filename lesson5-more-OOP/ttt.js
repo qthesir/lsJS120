@@ -217,44 +217,41 @@ class TTTGame {
   }
 
   computerMoves() {
-    let choice = this.offensiveComputerMove();
-
-    if (!choice) {
-      choice = this.defensiveComputerMove();
-    }
-
-    if (!choice) {
-      let validChoices = this.board.unusedSquares();
-
-      do {
-        choice = Math.ceil(Math.random() * 9).toString();
-      } while (!validChoices.includes(choice));
-    }
+    let choice =
+      this.opportunisticComputerMove() ||
+      this.pickCenterSquare() ||
+      this.pickRandomSquare();
 
     this.board.markSquareAt(choice, this.computer.getMarker());
   }
 
-  defensiveComputerMove() {
+  pickCenterSquare() {
+    return this.board.isUnusedSquare("5") ? "5" : null;
+  }
+
+  pickRandomSquare() {
+    let validChoices = this.board.unusedSquares();
+    let choice;
+    do {
+      choice = Math.ceil(Math.random() * 9).toString();
+    } while (!validChoices.includes(choice));
+
+    return choice;
+  }
+
+  opportunisticComputerMove() {
     let opportunitySquare;
 
     for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
       let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
-      opportunitySquare = this.board.getOpportunitySquare(this.human, row);
+      let offensiveMove = this.board.getOpportunitySquare(this.computer, row);
+      let defensiveMove = this.board.getOpportunitySquare(this.human, row);
 
+      opportunitySquare = offensiveMove || defensiveMove;
       if (opportunitySquare) return opportunitySquare;
     }
 
     return null;
-  }
-
-  offensiveComputerMove() {
-    let opportunitySquare;
-
-    for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
-      let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
-      opportunitySquare = this.board.getOpportunitySquare(this.computer, row);
-      if (opportunitySquare) return opportunitySquare;
-    }
   }
 
   displayResults() {
