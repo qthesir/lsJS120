@@ -218,7 +218,8 @@ class TTTGame {
 
   computerMoves() {
     let choice =
-      this.opportunisticComputerMove() ||
+      this.offensiveComputerMove() ||
+      this.defensiveComputerMove() ||
       this.pickCenterSquare() ||
       this.pickRandomSquare();
 
@@ -239,15 +240,18 @@ class TTTGame {
     return choice;
   }
 
-  opportunisticComputerMove() {
-    let opportunitySquare;
+  offensiveComputerMove() {
+    return this.findCriticalSquare(this.computer);
+  }
 
+  defensiveComputerMove() {
+    return this.findCriticalSquare(this.human);
+  }
+
+  findCriticalSquare(player) {
     for (let i = 0; i < TTTGame.POSSIBLE_WINNING_ROWS.length; i++) {
       let row = TTTGame.POSSIBLE_WINNING_ROWS[i];
-      let offensiveMove = this.board.getOpportunitySquare(this.computer, row);
-      let defensiveMove = this.board.getOpportunitySquare(this.human, row);
-
-      opportunitySquare = offensiveMove || defensiveMove;
+      let opportunitySquare = this.board.getOpportunitySquare(player, row);
       if (opportunitySquare) return opportunitySquare;
     }
 
