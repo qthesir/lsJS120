@@ -106,10 +106,19 @@ class Board {
 class Player {
   constructor(marker) {
     this.marker = marker;
+    this.score = 0;
   }
 
   getMarker() {
     return this.marker;
+  }
+
+  incrementScore() {
+    this.score += 1;
+  }
+
+  getScore() {
+    return this.score;
   }
 }
 
@@ -143,15 +152,52 @@ class TTTGame {
     this.computer = new Computer();
   }
 
+  handleScore() {
+    if (this.isWinner(this.human)) {
+      this.human.incrementScore();
+    } else if (this.isWinner(this.computer)) {
+      this.computer.incrementScore();
+    }
+  }
+
+  displayScore() {
+    console.log("");
+    console.log(`Your score is: ${this.human.getScore()}`);
+    console.log(`Computer's score is: ${this.computer.getScore()}`);
+  }
+
+  displayGrandWinner() {
+    console.log("");
+    console.log("----------Final Score----------");
+    this.displayScore();
+    if (this.isGrandWinner(this.human)) {
+      console.log("Congratulations! You're the grand champion.");
+    } else if (this.isGrandWinner(this.computer)) {
+      console.log("Computer is the grand champion!");
+    } else {
+      console.log("Match incomplete. No one is the grand champion.");
+    }
+  }
+
+  isGrandWinner(player) {
+    return player.getScore() >= 3;
+  }
+
+  someoneIsGrandWinner() {
+    return this.isGrandWinner(this.human) || this.isGrandWinner(this.computer);
+  }
+
   play() {
     this.displayWelcomeMessage();
 
     while (true) {
       this.playOneGame();
-
-      if (!this.playAgain()) break;
+      this.handleScore();
+      this.displayScore();
+      if (this.someoneIsGrandWinner() || !this.playAgain()) break;
     }
 
+    this.displayGrandWinner();
     this.displayGoodbyeMessage();
   }
 
