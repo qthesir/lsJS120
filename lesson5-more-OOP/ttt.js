@@ -136,7 +136,6 @@ class Computer extends Player {
 }
 
 class TTTGame {
-  static FIRST_MATCH_HUMAN_GOES_FIRST = true;
   static CENTER_SQUARE_INDEX = 5;
   static MATCH_GOAL = 3;
   static POSSIBLE_WINNING_ROWS = [
@@ -154,6 +153,7 @@ class TTTGame {
     this.board = new Board();
     this.human = new Human();
     this.computer = new Computer();
+    this.firstPlayer = this.human;
   }
 
   updateMatchScore() {
@@ -199,48 +199,52 @@ class TTTGame {
 
   playMatch() {
     console.log(`First player to ${TTTGame.MATCH_GOAL} games wins the match!`);
-    let humanGoesFirst = TTTGame.FIRST_MATCH_HUMAN_GOES_FIRST;
+
     while (true) {
-      this.playOneGame(humanGoesFirst);
+      this.playOneGame();
       this.updateMatchScore();
       this.displayMatchScore();
       if (this.isMatchOver()) break;
       if (!this.playAgain()) break;
-      humanGoesFirst = !humanGoesFirst;
+
+      this.toggleFirstPlayer();
     }
 
     this.displayMatchResults();
   }
 
-  playOneGame(humanGoesFirst) {
+  playOneGame() {
     this.board.reset();
     this.board.display();
+
+    let currentPlayer = this.firstPlayer;
     while (true) {
-      if (humanGoesFirst) {
-        this.board.displayWithClear();
-        this.humanMoves();
-        if (this.gameOver()) break;
+      this.playerMoves(currentPlayer);
+      if (this.gameOver()) break;
 
-        this.computerMoves();
-        if (this.gameOver()) break;
-      } else {
-        this.computerMoves();
-        if (this.gameOver()) break;
-
-        this.board.displayWithClear();
-
-        this.humanMoves();
-        if (this.gameOver()) break;
-      }
+      this.board.displayWithClear();
+      currentPlayer = this.togglePlayer(currentPlayer);
     }
     this.board.displayWithClear();
     this.displayResults();
+  }
+
+  togglePlayer(currentPlayer) {
+    return currentPlayer === this.human ? this.computer : this.human;
+  }
+
+  toggleFirstPlayer() {
+    this.firstPlayer = this.togglePlayer(this.firstPlayer);
   }
 
   displayWelcomeMessage() {
     console.clear();
     console.log("Welcome to Tic Tac Toe!");
     console.log("");
+  }
+
+  playerMoves(currentPlayer) {
+    currentPlayer === this.human ? this.humanMoves() : this.computerMoves();
   }
 
   humanMoves() {
