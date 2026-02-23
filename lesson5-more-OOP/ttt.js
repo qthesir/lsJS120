@@ -136,6 +136,7 @@ class Computer extends Player {
 }
 
 class TTTGame {
+  static FIRST_MATCH_HUMAN_GOES_FIRST = true;
   static CENTER_SQUARE_INDEX = 5;
   static MATCH_GOAL = 3;
   static POSSIBLE_WINNING_ROWS = [
@@ -198,32 +199,40 @@ class TTTGame {
 
   playMatch() {
     console.log(`First player to ${TTTGame.MATCH_GOAL} games wins the match!`);
-
+    let humanGoesFirst = TTTGame.FIRST_MATCH_HUMAN_GOES_FIRST;
     while (true) {
-      this.playOneGame();
+      this.playOneGame(humanGoesFirst);
       this.updateMatchScore();
       this.displayMatchScore();
       if (this.isMatchOver()) break;
       if (!this.playAgain()) break;
+      humanGoesFirst = !humanGoesFirst;
     }
 
     this.displayMatchResults();
   }
 
-  playOneGame() {
+  playOneGame(humanGoesFirst) {
     this.board.reset();
     this.board.display();
-
     while (true) {
-      this.humanMoves();
-      if (this.gameOver()) break;
+      if (humanGoesFirst) {
+        this.board.displayWithClear();
+        this.humanMoves();
+        if (this.gameOver()) break;
 
-      this.computerMoves();
-      if (this.gameOver()) break;
+        this.computerMoves();
+        if (this.gameOver()) break;
+      } else {
+        this.computerMoves();
+        if (this.gameOver()) break;
 
-      this.board.displayWithClear();
+        this.board.displayWithClear();
+
+        this.humanMoves();
+        if (this.gameOver()) break;
+      }
     }
-
     this.board.displayWithClear();
     this.displayResults();
   }
@@ -254,7 +263,7 @@ class TTTGame {
   static joinOr(squares, delimeter = ",", finalWord = "or") {
     if (squares.length === 1) return String(squares[0]);
     if (squares.length === 2)
-      return String(squares[0] + finalWord + squares[1]);
+      return String(squares[0] + " " + finalWord + " " + squares[1]);
 
     let string = String(squares[0] + delimeter + " ");
 
@@ -408,5 +417,16 @@ offensive move. But perhaps its cleaner / easier to read if you just separate th
 What I do like is the addition of the isUnusedSquare method to the board object. This is more clear than what i was doing before.
 
 I also like the flow of logic in the computers move.
+
+Ok, so human going first vs. computer... 
+
+Few options here. First is a switch. Goes true / false. Depending on whether the switch is on or off, 
+we can change who goes first in the loop.
+
+Could also keep track of the total number of turns taken. If the turn is even, human goes first. If odd, computer goes first.
+
+And then how to actually swap the pattern? I think control flow is a pretty simple solution here. You could say "human goes first",
+and that could be your switch. You can set that switch to a different initial value, as a static variable, which would allow you 
+to say who goes first in general. Thinkt his is the best solutoi
 
 */
