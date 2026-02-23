@@ -27,13 +27,14 @@ class Square {
 }
 
 class Board {
+  static NUM_BOARD_SQUARES = 9;
   constructor() {
     this.reset();
   }
 
   reset() {
     this.squares = {};
-    for (let counter = 1; counter <= 9; counter++) {
+    for (let counter = 1; counter <= Board.NUM_BOARD_SQUARES; counter++) {
       this.squares[counter] = new Square();
     }
   }
@@ -135,6 +136,7 @@ class Computer extends Player {
 }
 
 class TTTGame {
+  static CENTER_SQUARE_INDEX = 5;
   static MATCH_GOAL = 3;
   static POSSIBLE_WINNING_ROWS = [
     ["1", "2", "3"], // top row of board
@@ -201,7 +203,8 @@ class TTTGame {
       this.playOneGame();
       this.updateMatchScore();
       this.displayMatchScore();
-      if (this.isMatchOver() || !this.playAgain()) break;
+      if (this.isMatchOver()) break;
+      if (!this.playAgain()) break;
     }
 
     this.displayMatchResults();
@@ -279,7 +282,9 @@ class TTTGame {
   }
 
   pickCenterSquare() {
-    return this.board.isUnusedSquare("5") ? "5" : null;
+    return this.board.isUnusedSquare(TTTGame.CENTER_SQUARE_INDEX)
+      ? TTTGame.CENTER_SQUARE_INDEX
+      : null;
   }
 
   pickRandomSquare() {
