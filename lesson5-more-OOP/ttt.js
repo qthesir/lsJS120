@@ -135,6 +135,7 @@ class Computer extends Player {
 }
 
 class TTTGame {
+  static MATCH_GOAL = 3;
   static POSSIBLE_WINNING_ROWS = [
     ["1", "2", "3"], // top row of board
     ["4", "5", "6"], // center row of board
@@ -152,7 +153,7 @@ class TTTGame {
     this.computer = new Computer();
   }
 
-  handleScore() {
+  updateMatchScore() {
     if (this.isWinner(this.human)) {
       this.human.incrementScore();
     } else if (this.isWinner(this.computer)) {
@@ -160,45 +161,50 @@ class TTTGame {
     }
   }
 
-  displayScore() {
+  displayMatchScore() {
     console.log("");
     console.log(`Your score is: ${this.human.getScore()}`);
     console.log(`Computer's score is: ${this.computer.getScore()}`);
   }
 
-  displayGrandWinner() {
+  displayMatchResults() {
     console.log("");
     console.log("----------Final Score----------");
-    this.displayScore();
-    if (this.isGrandWinner(this.human)) {
+    this.displayMatchScore();
+    if (this.isMatchWinner(this.human)) {
       console.log("Congratulations! You're the grand champion.");
-    } else if (this.isGrandWinner(this.computer)) {
+    } else if (this.isMatchWinner(this.computer)) {
       console.log("Computer is the grand champion!");
     } else {
       console.log("Match incomplete. No one is the grand champion.");
     }
   }
 
-  isGrandWinner(player) {
-    return player.getScore() >= 3;
+  isMatchWinner(player) {
+    return player.getScore() >= TTTGame.MATCH_GOAL;
   }
 
-  someoneIsGrandWinner() {
-    return this.isGrandWinner(this.human) || this.isGrandWinner(this.computer);
+  isMatchOver() {
+    return this.isMatchWinner(this.human) || this.isMatchWinner(this.computer);
   }
 
   play() {
     this.displayWelcomeMessage();
+    this.playMatch();
+    this.displayGoodbyeMessage();
+  }
+
+  playMatch() {
+    console.log(`First player to ${TTTGame.MATCH_GOAL} games wins the match!`);
 
     while (true) {
       this.playOneGame();
-      this.handleScore();
-      this.displayScore();
-      if (this.someoneIsGrandWinner() || !this.playAgain()) break;
+      this.updateMatchScore();
+      this.displayMatchScore();
+      if (this.isMatchOver() || !this.playAgain()) break;
     }
 
-    this.displayGrandWinner();
-    this.displayGoodbyeMessage();
+    this.displayMatchResults();
   }
 
   playOneGame() {
