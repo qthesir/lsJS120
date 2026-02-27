@@ -18,12 +18,13 @@ class Deck {
       "King",
     ];
     this.resetDeck();
-    console.log(this.cards);
   }
 
   deal(participant) {
     let randomIndex = Math.floor(Math.random() * this.deck.length);
-    
+    let card = this.deck.splice(randomIndex, 1);
+
+    participant.cards.push(card);
   }
 
   resetDeck() {
@@ -59,7 +60,7 @@ class Participant {
   constructor() {
     this.bust = false;
     this.score = 0;
-    this.cards = [];
+    this.hand = [];
   }
 
   hit() {}
@@ -89,9 +90,37 @@ class twentyOneGame {
     this.deck = new Deck();
   }
 
+  playOneGame() {
+    this.displayWelcomeMessage();
+    this.dealFirstCards();
+    this.playerTurn();
+    if (!this.player.bust) this.dealerTurn();
+    this.displayWinner();
+  }
+
+  displayWelcomeMessage() {
+    console.log(" ")
+    console.log("Welcome to Twenty-One!")
+  }
+
+  displayGoodbyeMessage() {
+    console.log("Thanks for playing. Goodbye!")
+  }
+
+  displayWinner() {
+
+  }
+
   displayHand(participant, hidden = true) {}
 
   displayPoints(participant) {}
+
+  dealFirstCards() {
+    for (let i = 0; i < 2; i++) {
+      this.deck.deal(this.player);
+      this.deck.deal(this.dealer);
+    }
+  }
 }
 
 let game = new twentyOneGame();
@@ -109,5 +138,8 @@ of the hand?
 Question: I've encountered a situation, with the deal method, where I can either return a card from the deck, and set it equal to the 
 participant in the parent function, or mutate the participant object passed to the method. What should I do here? 
 
-Maybe I'll just leave it alone for now, focus on the twentyOneGame function, and 
+Maybe I'll just leave it alone for now, focus on the twentyOneGame function, and then determine what will make the most sense. Thats why
+you start at the top level...
+
+Do I want to deal 
 */
