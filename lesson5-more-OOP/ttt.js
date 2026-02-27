@@ -136,7 +136,7 @@ class Computer extends Player {
 }
 
 class TTTGame {
-  static CENTER_SQUARE_INDEX = 5;
+  static CENTER_SQUARE_INDEX = "5";
   static MATCH_GOAL = 3;
   static POSSIBLE_WINNING_ROWS = [
     ["1", "2", "3"], // top row of board
@@ -229,8 +229,8 @@ class TTTGame {
     this.displayResults();
   }
 
-  togglePlayer(currentPlayer) {
-    return currentPlayer === this.human ? this.computer : this.human;
+  togglePlayer(player) {
+    return player === this.human ? this.computer : this.human;
   }
 
   toggleFirstPlayer() {
@@ -269,19 +269,9 @@ class TTTGame {
     if (squares.length === 2)
       return String(squares[0] + " " + finalWord + " " + squares[1]);
 
-    let string = String(squares[0] + delimeter + " ");
-
-    for (let counter = 1; counter < squares.length; counter++) {
-      if (counter === squares.length - 2) {
-        string += String(squares[counter]) + delimeter + " " + finalWord + " ";
-      } else if (counter === squares.length - 1) {
-        string += String(squares[counter]);
-      } else {
-        string += String(squares[counter]) + delimeter + " ";
-      }
-    }
-
-    return string;
+    let lastSquare = squares[squares.length - 1];
+    let allButLast = squares.slice(0, -1).join(`${delimeter} `);
+    return `${allButLast}${delimeter} ${finalWord} ${lastSquare}`;
   }
 
   computerMoves() {

@@ -227,3 +227,8 @@ TTTGame.prototype.isWinner = function (player) {
 
 let game = new TTTGame();
 game.play();
+
+/*
+Just want to make a small note for my review: the .prototype property on the constructor function has an object that  
+contains the methods that are inherited by the objects created by that constructor.
+*/ 
