@@ -1,3 +1,5 @@
+let readline = require("readline-sync");
+
 class Deck {
   constructor() {
     this.suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
@@ -60,7 +62,7 @@ class Card {
   }
 
   getRank() {
-    return this.rank
+    return this.rank;
   }
 }
 
@@ -81,23 +83,20 @@ class Participant {
     Queen: 10,
     King: 10,
   };
+
   constructor() {
-    this.bust = false;
     this.hand = [];
   }
 
-  hit() {}
-
-  stay() {}
+  isBust() {
+    return this.calculatePoints() > 21;
+  }
 
   calculatePoints() {
     let score = this.hand.reduce((score, card) => {
-      console.log(card.getRank())
       score = score + Participant.CARD_TO_SCORE[card.rank];
       return score;
     }, 0);
-
-    console.log(score);
 
     let numAces = this.hand.filter((card) => card.rank === "Ace").length;
     for (let i = 0; i < numAces; i++) {
@@ -107,13 +106,6 @@ class Participant {
 
     return score;
   }
-
-  // The problem with the ace is you basically need to know what the previous points were in order to calculate it, so maybe
-  // I can initially sort the cards with the Ace in the last position so that I can see what the first card is. Maybe I
-  // also check, initially, to see if there's an Ace at all. And what if there are two aces? I guess that would just be 12.
-  // But its if the points are over 21, and their is an Ace included, then the ace needs to be a one. I might also just
-  // be able to check that at the very end. > 21 && ace included? Ace becomes a 1. Recalc score. Still over 21 && ace included?
-  // add the other ace.
 
   displayHand(hidden = false) {
     hidden
@@ -155,7 +147,7 @@ class TwentyOneGame {
     this.dealer.displayHand(true);
 
     this.playerTurn();
-    if (!this.player.bust) this.dealerTurn();
+    if (!this.player.isBust()) this.dealerTurn();
     this.displayWinner();
   }
 
@@ -180,11 +172,40 @@ class TwentyOneGame {
 
   playerTurn() {
     console.log("It's your turn");
-    this.player.displayHand();
-    this.player.displayPoints();
+
+    while (true) {
+      this.player.displayHand();
+      this.player.displayPoints();
+      let answer;
+
+      while (true) {
+        answer = readline.question("Please choose whether to hit or stay: ");
+
+        if (["hit", "stay"].includes(answer)) break;
+      }
+
+      if (answer === "hit") {
+        this.deck.deal(this.player);
+      }
+
+      if (this.player.isBust() || answer === "stay") break;
+    }
   }
 
-  dealerTurn() {}
+  dealerTurn() {
+    console.log("Dealers Turn");
+
+    while (true) {
+      this.dealer.displayHand();
+      this.dealer.displayPoints();
+
+      if (this.dealer.calculatePoints() > 17) {
+        this.deck.deal(this.dealer);
+      }
+
+      if (this.dealer.isBust()) break;
+    }
+  }
 }
 
 let game = new TwentyOneGame();
