@@ -107,6 +107,10 @@ class Participant {
     return score;
   }
 
+  resetHand() {
+    this.hand = [];
+  }
+
   displayHand(hidden = false) {
     hidden
       ? console.log(
@@ -125,6 +129,18 @@ class Player extends Participant {
     super();
     this.bankroll = 5;
   }
+
+  incrementBankroll() {
+    this.bankroll += 1;
+  }
+
+  decrementBankroll() {
+    this.bankroll -= 1;
+  }
+
+  getBankroll() {
+    return this.bankroll;
+  }
 }
 
 class Dealer extends Participant {
@@ -134,14 +150,39 @@ class Dealer extends Participant {
 }
 
 class TwentyOneGame {
+  static STARTING_CARDS_IN_HAND = 2;
+  static BUST_THRESHOLD = 21;
+  static DEALER_HIT_THRESHOLD = 17;
   constructor() {
     this.player = new Player();
     this.dealer = new Dealer();
     this.deck = new Deck();
   }
 
-  playOneGame() {
+  play() {
     this.displayWelcomeMessage();
+
+    while (true) {
+      this.playOneGame();
+      this.handleBankroll();
+      this.displayBankroll();
+
+      this.deck.resetDeck();
+      this.player.resetHand();
+      this.dealer.resetHand();
+
+      if (
+        !this.playAgain() ||
+        this.player.getBankroll >= 10 ||
+        this.player.getBankroll === 0
+      )
+        break;
+    }
+
+    this.displayGoodbyeMessage();
+  }
+
+  playOneGame() {
     this.dealFirstCards();
     this.player.displayHand();
     this.dealer.displayHand(true);
@@ -151,26 +192,77 @@ class TwentyOneGame {
     this.displayWinner();
   }
 
+  playAgain() {
+    let answer;
+    while (true) {
+      answer = readline.question("Would you like to play again? y or n: ");
+
+      if (["y", "n"].includes(answer)) break;
+
+      console.log("Invalid response");
+    }
+
+    return answer === "y";
+  }
+
   displayWelcomeMessage() {
     console.log(" ");
-    console.log("Welcome to Twenty-One!");
+    console.log(
+      "Welcome to Twenty-One! You have $5. If you win, you make $1. If you lose, you lose $1. $10 means you win. $0 means you lose. Good luck!"
+    );
     console.log(" ");
   }
 
   displayGoodbyeMessage() {
+    console.log("");
     console.log("Thanks for playing. Goodbye!");
   }
 
-  displayWinner() {}
+  displayWinner() {
+    console.log("");
+    let dealerPoints = this.dealer.calculatePoints();
+    let playerPoints = this.player.calculatePoints();
+
+    if (dealerPoints > TwentyOneGame.BUST_THRESHOLD) {
+      console.log("Dealer busted. You win!");
+    } else if (playerPoints > TwentyOneGame.BUST_THRESHOLD) {
+      console.log("You busted. Dealer wins.");
+    } else if (playerPoints > dealerPoints) {
+      console.log("You have the most points. You win!");
+    } else if (dealerPoints > playerPoints) {
+      console.log("Dealer has the most points. Dealer wins!");
+    }
+  }
+
+  displayBankroll() {
+    console.log("");
+    console.log(`You have ${this.player.getBankroll()} dollars.`);
+  }
+
+  handleBankroll() {
+    let dealerPoints = this.dealer.calculatePoints();
+    let playerPoints = this.player.calculatePoints();
+
+    if (dealerPoints > TwentyOneGame.BUST_THRESHOLD) {
+      return this.player.incrementBankroll();
+    } else if (playerPoints > TwentyOneGame.BUST_THRESHOLD) {
+      return this.player.decrementBankroll();
+    } else if (playerPoints > dealerPoints) {
+      return this.player.incrementBankroll();
+    } else if (dealerPoints > playerPoints) {
+      return this.dealer.decrementBankroll();
+    }
+  }
 
   dealFirstCards() {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < TwentyOneGame.STARTING_CARDS_IN_HAND; i++) {
       this.deck.deal(this.player);
       this.deck.deal(this.dealer);
     }
   }
 
   playerTurn() {
+    console.log("");
     console.log("It's your turn");
 
     while (true) {
@@ -193,24 +285,25 @@ class TwentyOneGame {
   }
 
   dealerTurn() {
+    console.log("");
     console.log("Dealers Turn");
 
     while (true) {
       this.dealer.displayHand();
       this.dealer.displayPoints();
 
-      if (this.dealer.calculatePoints() > 17) {
+      if (this.dealer.calculatePoints() < TwentyOneGame.DEALER_HIT_THRESHOLD) {
         this.deck.deal(this.dealer);
+      } else {
+        break;
       }
-
-      if (this.dealer.isBust()) break;
     }
   }
 }
 
 let game = new TwentyOneGame();
 
-game.playOneGame();
+game.play();
 
 /*
 The whole purpose of objects is to encapsulate state and behavior.
