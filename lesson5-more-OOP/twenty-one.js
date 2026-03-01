@@ -22,8 +22,7 @@ class Deck {
   }
 
   deal() {
-    let randomIndex = Math.floor(Math.random() * this.cards.length);
-    return this.cards.splice(randomIndex, 1)[0];
+    return this.cards.pop();
   }
 
   resetDeck() {
