@@ -5,7 +5,6 @@ class Deck {
     this.suits = ["Spades", "Hearts", "Diamonds", "Clubs"];
     this.ranks = [
       "Ace",
-      "1",
       "2",
       "3",
       "4",
@@ -22,11 +21,9 @@ class Deck {
     this.resetDeck();
   }
 
-  deal(participant) {
+  deal() {
     let randomIndex = Math.floor(Math.random() * this.cards.length);
-    let card = this.cards.splice(randomIndex, 1)[0];
-
-    participant.hand.push(card);
+    return this.cards.splice(randomIndex, 1)[0];
   }
 
   resetDeck() {
@@ -69,7 +66,6 @@ class Card {
 class Participant {
   static CARD_TO_SCORE = {
     Ace: 11,
-    1: 1,
     2: 2,
     3: 3,
     4: 4,
@@ -111,8 +107,8 @@ class Participant {
     this.hand = [];
   }
 
-  showCards(hidden = false) {
-    hidden
+  showCards(hideSecondCard = false) {
+    hideSecondCard
       ? console.log(
           `${this.constructor.name} has ${this.hand[0]} and a hidden card`
         )
@@ -121,6 +117,10 @@ class Participant {
 
   displayPoints() {
     console.log(`${this.constructor.name} points: ${this.calculatePoints()}`);
+  }
+
+  addCardToHand(card) {
+    this.hand.push(card);
   }
 }
 
@@ -180,8 +180,8 @@ class TwentyOneGame {
 
       if (
         !this.playAgain() ||
-        this.player.getBankroll >= TwentyOneGame.BANKROLL_TO_WIN ||
-        this.player.getBankroll === TwentyOneGame.BANKROLL_TO_LOSE
+        this.player.getBankroll() >= TwentyOneGame.BANKROLL_TO_WIN ||
+        this.player.getBankroll() === TwentyOneGame.BANKROLL_TO_LOSE
       )
         break;
     }
@@ -239,6 +239,8 @@ class TwentyOneGame {
       console.log("You have the most points. You win!");
     } else if (dealerPoints > playerPoints) {
       console.log("Dealer has the most points. Dealer wins!");
+    } else if (dealerPoints === playerPoints) {
+      console.log("Its a tie. No one wins.");
     }
   }
 
@@ -252,21 +254,33 @@ class TwentyOneGame {
     let playerPoints = this.player.calculatePoints();
 
     if (dealerPoints > TwentyOneGame.BUST_THRESHOLD) {
-      return this.player.incrementBankroll();
+      this.player.incrementBankroll();
     } else if (playerPoints > TwentyOneGame.BUST_THRESHOLD) {
-      return this.player.decrementBankroll();
+      this.player.decrementBankroll();
     } else if (playerPoints > dealerPoints) {
-      return this.player.incrementBankroll();
+      this.player.incrementBankroll();
     } else if (dealerPoints > playerPoints) {
-      return this.dealer.decrementBankroll();
+      this.player.decrementBankroll();
+    } else if (dealerPoints === playerPoints) {
     }
   }
 
   dealCards() {
     for (let i = 0; i < TwentyOneGame.STARTING_CARDS_IN_HAND; i++) {
-      this.deck.deal(this.player);
-      this.deck.deal(this.dealer);
+      this.player.addCardToHand(this.deck.deal());
+      this.dealer.addCardToHand(this.deck.deal());
     }
+  }
+
+  getHitOrStay() {
+    let answer;
+    while (true) {
+      answer = readline.question("Please choose whether to hit or stay: ");
+
+      if (["hit", "stay"].includes(answer)) break;
+    }
+
+    return answer;
   }
 
   playerTurn() {
@@ -276,16 +290,10 @@ class TwentyOneGame {
     while (true) {
       this.player.showCards();
       this.player.displayPoints();
-      let answer;
-
-      while (true) {
-        answer = readline.question("Please choose whether to hit or stay: ");
-
-        if (["hit", "stay"].includes(answer)) break;
-      }
+      let answer = this.getHitOrStay();
 
       if (answer === "hit") {
-        this.deck.deal(this.player);
+        this.player.addCardToHand(this.deck.deal());
       }
 
       if (this.player.isBust() || answer === "stay") break;
@@ -301,7 +309,7 @@ class TwentyOneGame {
       this.dealer.displayPoints();
 
       if (this.dealer.calculatePoints() < TwentyOneGame.DEALER_HIT_THRESHOLD) {
-        this.deck.deal(this.dealer);
+        this.dealer.addCardToHand(this.deck.deal());
       } else {
         break;
       }
