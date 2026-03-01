@@ -111,7 +111,7 @@ class Participant {
     this.hand = [];
   }
 
-  displayHand(hidden = false) {
+  showCards(hidden = false) {
     hidden
       ? console.log(
           `${this.constructor.name} has ${this.hand[0]} and a hidden card`
@@ -125,17 +125,21 @@ class Participant {
 }
 
 class Player extends Participant {
+  static STARTING_BANKROLL = 5;
+  static REWARD_FOR_WINNING = 1;
+  static COST_FOR_LOSING = 1;
+
   constructor() {
     super();
-    this.bankroll = 5;
+    this.bankroll = Player.STARTING_BANKROLL;
   }
 
   incrementBankroll() {
-    this.bankroll += 1;
+    this.bankroll += Player.REWARD_FOR_WINNING;
   }
 
   decrementBankroll() {
-    this.bankroll -= 1;
+    this.bankroll -= Player.COST_FOR_LOSING;
   }
 
   getBankroll() {
@@ -153,6 +157,9 @@ class TwentyOneGame {
   static STARTING_CARDS_IN_HAND = 2;
   static BUST_THRESHOLD = 21;
   static DEALER_HIT_THRESHOLD = 17;
+  static BANKROLL_TO_WIN = 10;
+  static BANKROLL_TO_LOSE = 0;
+
   constructor() {
     this.player = new Player();
     this.dealer = new Dealer();
@@ -173,8 +180,8 @@ class TwentyOneGame {
 
       if (
         !this.playAgain() ||
-        this.player.getBankroll >= 10 ||
-        this.player.getBankroll === 0
+        this.player.getBankroll >= TwentyOneGame.BANKROLL_TO_WIN ||
+        this.player.getBankroll === TwentyOneGame.BANKROLL_TO_LOSE
       )
         break;
     }
@@ -183,9 +190,9 @@ class TwentyOneGame {
   }
 
   playOneGame() {
-    this.dealFirstCards();
-    this.player.displayHand();
-    this.dealer.displayHand(true);
+    this.dealCards();
+    this.player.showCards();
+    this.dealer.showCards(true);
 
     this.playerTurn();
     if (!this.player.isBust()) this.dealerTurn();
@@ -207,8 +214,9 @@ class TwentyOneGame {
 
   displayWelcomeMessage() {
     console.log(" ");
+    console.log("Welcome to Twenty-One!");
     console.log(
-      "Welcome to Twenty-One! You have $5. If you win, you make $1. If you lose, you lose $1. $10 means you win. $0 means you lose. Good luck!"
+      "You have $5. If you win, you make $1. If you lose, you lose $1. $10 means you win. $0 means you lose. Good luck!"
     );
     console.log(" ");
   }
@@ -254,7 +262,7 @@ class TwentyOneGame {
     }
   }
 
-  dealFirstCards() {
+  dealCards() {
     for (let i = 0; i < TwentyOneGame.STARTING_CARDS_IN_HAND; i++) {
       this.deck.deal(this.player);
       this.deck.deal(this.dealer);
@@ -266,7 +274,7 @@ class TwentyOneGame {
     console.log("It's your turn");
 
     while (true) {
-      this.player.displayHand();
+      this.player.showCards();
       this.player.displayPoints();
       let answer;
 
@@ -289,7 +297,7 @@ class TwentyOneGame {
     console.log("Dealers Turn");
 
     while (true) {
-      this.dealer.displayHand();
+      this.dealer.showCards();
       this.dealer.displayPoints();
 
       if (this.dealer.calculatePoints() < TwentyOneGame.DEALER_HIT_THRESHOLD) {
