@@ -7,17 +7,17 @@ class Pet {
 
 class Cat extends Pet {
   constructor(name, age, furColor) {
-    super(name, age)
-    this.furColor = furColor
+    super(name, age);
+    this.furColor = furColor;
   }
 
   info() {
-    return `My cat ${this.name} is ${this.age} years old and has ${this.furColor} fur.`
+    return `My cat ${this.name} is ${this.age} years old and has ${this.furColor} fur.`;
   }
 }
 
-let pudding = new Cat('Pudding', 7, 'black and white');
-let butterscotch = new Cat('Butterscotch', 10, 'tan and white');
+let pudding = new Cat("Pudding", 7, "black and white");
+let butterscotch = new Cat("Butterscotch", 10, "tan and white");
 
 console.log(pudding.info());
 console.log(butterscotch.info());
@@ -36,4 +36,3 @@ and not all pets are cats or have fur.
 If a pet happens to not have a relevant color, you could simply not pass in color to the 
 constructor and leave it as undefined for that particular pet. 
 */
-
