@@ -1,5 +1,3 @@
-
-
 class Rectangle {
   constructor(width, length) {
     this.width = width;
@@ -7,20 +5,24 @@ class Rectangle {
   }
 
   getWidth() {
-    return this.width
+    return this.width;
   }
 
   getLength() {
-    return this.length
+    return this.length;
   }
 
   getArea() {
-    return this.length * this.width 
+    return this.width * this.length
   }
 }
 
-let rect = new Rectangle(4, 5) 
+class Square extends Rectangle {
+  constructor(sideLength) {
+    super(sideLength, sideLength);
+  }
+}
 
-console.log(rect.getWidth())
-console.log(rect.getLength())
-console.log(rect.getArea())
+let square = new Square(5);
+
+console.log(square.getArea());
