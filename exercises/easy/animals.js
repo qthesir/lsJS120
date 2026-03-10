@@ -18,7 +18,7 @@ class Cat extends Animal {
   }
 
   introduce() {
-    return Animal.prototype.introduce.call(this) + " Meow Meow!";
+    return `${super.introduce()} Meow meow!`
   }
 }
 
@@ -40,3 +40,12 @@ let dog = new Dog("Gerald", 2, "playing", "Q");
 console.log(cat.introduce());
 console.log(dog.introduce());
 console.log(dog.greetMaster());
+
+
+/* Alternative implementation that I thought was interesting and wanted to note: 
+
+introduce() {
+    return Animal.prototype.introduce.call(this) + " Meow Meow!";
+  }
+
+*/
