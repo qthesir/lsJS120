@@ -40,3 +40,12 @@ let car = new Car("Toyota", "Camry");
 
 console.log(car.getWheels());
 console.log(car.info());
+
+/*
+Does it make sense to write a getWheels method in the vehicle class? Yes. In my implementation,
+I've used getWheels in the vehicle class and instead have wheels as state variables, which are 
+held as static methods on the class and passed as constructor variables. If you wanted to maintain
+the current approach by using a hard coded number in the method, it could make sense if vehicles
+have, say, a default number of wheels as 4. Many vehicles have 4 wheels. SO you only overwrite the
+value for wheels that dont. 
+*/
