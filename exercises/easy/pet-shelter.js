@@ -1,8 +1,13 @@
 // Write the code to make this work
 
+/*
+Ok if we want to add pets to the shelter and then have the pet 
+*/
+
 class Shelter {
   constructor() {
     this.owners = [];
+    this.petsForAdoption = [];
   }
 
   adopt(owner, pet) {
