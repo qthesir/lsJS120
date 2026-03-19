@@ -6,6 +6,9 @@ to keep track of pets in the shelter, a way to add them, and then we have to upd
 from the list of available pets instead of passing them into the function... Hm... maybe when a new pet is created,
 its added to the shelter, as part of the constructor? But thats not explicit. We want an explicit way to add it to the
 shelter. It could also have pets, and pets not available for adoption, but we don't need that level of specificity right now. 
+
+Based on my experimentation with an array, I think the object reference is actually more elegant, because then I don't 
+have to do findIndex every time. 
 */
 
 class Shelter {
@@ -22,15 +25,25 @@ class Shelter {
     }
   }
 
+  printUnadoptedPets() {
+    console.log("The Animal Shelter has the following unadopted pets:");
+    this.petsForAdoption.forEach((pet) => {
+      console.log(`a ${pet.getType()} named ${pet.getName()}`);
+    });
+
+    console.log("");
+  }
+
   adopt(owner, pet) {
     if (!this.petsForAdoption.includes(pet)) {
       return "Pet is not available for adoption";
     }
     let petForAdoption = this.petsForAdoption.splice(
-      this.petsForAdoption.findIndex((thisPet) => thisPet === pet),
+      this.petsForAdoption.findIndex((thisPet) => {
+        return thisPet.name === pet.name;
+      }),
       1
-    );
-    console.log(petForAdoption);
+    )[0];
     owner.adoptPet(petForAdoption);
     if (!this.owners.includes(owner)) {
       this.owners.push(owner);
@@ -104,6 +117,8 @@ shelter.rescuePet(chester);
 
 let phanson = new Owner("P Hanson");
 let bholmes = new Owner("B Holmes");
+
+shelter.printUnadoptedPets();
 
 shelter.adopt(phanson, butterscotch);
 shelter.adopt(phanson, pudding);
