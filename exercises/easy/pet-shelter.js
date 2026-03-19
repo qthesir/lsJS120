@@ -1,7 +1,11 @@
 // Write the code to make this work
 
 /*
-Ok if we want to add pets to the shelter and then have the pet 
+Ok if we want to add pets to the shelter and then have the pet get adopted later, we need a new data structure
+to keep track of pets in the shelter, a way to add them, and then we have to update the "adopt" function to take a pet 
+from the list of available pets instead of passing them into the function... Hm... maybe when a new pet is created,
+its added to the shelter, as part of the constructor? But thats not explicit. We want an explicit way to add it to the
+shelter. It could also have pets, and pets not available for adoption, but we don't need that level of specificity right now. 
 */
 
 class Shelter {
@@ -10,8 +14,24 @@ class Shelter {
     this.petsForAdoption = [];
   }
 
+  rescuePet(pet) {
+    if (!this.petsForAdoption.includes(pet)) {
+      this.petsForAdoption.push(pet);
+    } else {
+      return "Pet is already in the shelter";
+    }
+  }
+
   adopt(owner, pet) {
-    owner.adoptPet(pet);
+    if (!this.petsForAdoption.includes(pet)) {
+      return "Pet is not available for adoption";
+    }
+    let petForAdoption = this.petsForAdoption.splice(
+      this.petsForAdoption.findIndex((thisPet) => thisPet === pet),
+      1
+    );
+    console.log(petForAdoption);
+    owner.adoptPet(petForAdoption);
     if (!this.owners.includes(owner)) {
       this.owners.push(owner);
     }
@@ -66,18 +86,25 @@ class Pet {
   }
 }
 
+let shelter = new Shelter();
 let butterscotch = new Pet("cat", "Butterscotch");
+shelter.rescuePet(butterscotch);
 let pudding = new Pet("cat", "Pudding");
+shelter.rescuePet(pudding);
 let darwin = new Pet("bearded dragon", "Darwin");
+shelter.rescuePet(darwin);
 let kennedy = new Pet("dog", "Kennedy");
+shelter.rescuePet(kennedy);
 let sweetie = new Pet("parakeet", "Sweetie Pie");
+shelter.rescuePet(sweetie);
 let molly = new Pet("dog", "Molly");
+shelter.rescuePet(molly);
 let chester = new Pet("fish", "Chester");
+shelter.rescuePet(chester);
 
 let phanson = new Owner("P Hanson");
 let bholmes = new Owner("B Holmes");
 
-let shelter = new Shelter();
 shelter.adopt(phanson, butterscotch);
 shelter.adopt(phanson, pudding);
 shelter.adopt(phanson, darwin);
