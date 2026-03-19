@@ -14,10 +14,8 @@ class Shelter {
 
   printAdoptions() {
     this.owners.forEach((owner) => {
-      console.log(`${owner.name} has adopted the following pets:`);
-      owner.pets.forEach((pet) => {
-        console.log(`a ${pet.type} named ${pet.name}`);
-      });
+      console.log(`${owner.getName()} has adopted the following pets:`);
+      owner.printPets();
       console.log(" ");
     });
   }
@@ -36,12 +34,30 @@ class Owner {
   adoptPet(pet) {
     this.pets.push(pet);
   }
+
+  printPets() {
+    this.pets.forEach((pet) => {
+      console.log(`a ${pet.getType()} named ${pet.getName()}`);
+    });
+  }
+
+  getName() {
+    return this.name;
+  }
 }
 
 class Pet {
   constructor(type, name) {
     this.type = type;
     this.name = name;
+  }
+
+  getType() {
+    return this.type;
+  }
+
+  getName() {
+    return this.name;
   }
 }
 
