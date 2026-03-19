@@ -26,7 +26,7 @@
 //   }
 // }
 
-let walkers = {
+const walkMixin = {
   walk() {
     return `${this.name} ${this.gait()} forward`;
   },
