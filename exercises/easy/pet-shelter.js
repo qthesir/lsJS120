@@ -15,13 +15,13 @@ Next thing to do: Change data structure from array to object
 
 class Shelter {
   constructor() {
-    this.owners = [];
-    this.petsForAdoption = [];
+    this.owners = {};
+    this.petsForAdoption = {};
   }
 
   rescuePet(pet) {
-    if (!this.petsForAdoption.includes(pet)) {
-      this.petsForAdoption.push(pet);
+    if (!this.petsForAdoption[pet.getName()]) {
+      this.petsForAdoption[pet.getName()] = pet;
     } else {
       return "Pet is already in the shelter";
     }
@@ -29,7 +29,7 @@ class Shelter {
 
   printUnadoptedPets() {
     console.log("The Animal Shelter has the following unadopted pets:");
-    this.petsForAdoption.forEach((pet) => {
+    Object.values(this.petsForAdoption).forEach((pet) => {
       console.log(`a ${pet.getType()} named ${pet.getName()}`);
     });
 
@@ -37,23 +37,19 @@ class Shelter {
   }
 
   adopt(owner, pet) {
-    if (!this.petsForAdoption.includes(pet)) {
+    if (!this.petsForAdoption[pet.getName()]) {
       return "Pet is not available for adoption";
     }
-    let petForAdoption = this.petsForAdoption.splice(
-      this.petsForAdoption.findIndex((thisPet) => {
-        return thisPet.name === pet.name;
-      }),
-      1
-    )[0];
+    let petForAdoption = this.petsForAdoption[pet.getName()];
     owner.adoptPet(petForAdoption);
-    if (!this.owners.includes(owner)) {
-      this.owners.push(owner);
+    delete this.petsForAdoption[pet.getName()];
+    if (!this.owners[owner.getName()]) {
+      this.owners[owner.getName()] = owner;
     }
   }
 
   printAdoptions() {
-    this.owners.forEach((owner) => {
+    Object.values(this.owners).forEach((owner) => {
       console.log(`${owner.getName()} has adopted the following pets:`);
       owner.printPets();
       console.log(" ");
@@ -132,3 +128,5 @@ shelter.adopt(bholmes, chester);
 shelter.printAdoptions();
 console.log(`${phanson.name} has ${phanson.numberOfPets()} adopted pets.`);
 console.log(`${bholmes.name} has ${bholmes.numberOfPets()} adopted pets.`);
+
+shelter.printUnadoptedPets();
