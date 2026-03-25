@@ -126,7 +126,7 @@ shelter.adopt(bholmes, sweetie);
 shelter.adopt(bholmes, molly);
 shelter.adopt(bholmes, chester);
 shelter.printAdoptions();
-console.log(`${phanson.name} has ${phanson.numberOfPets()} adopted pets.`);
-console.log(`${bholmes.name} has ${bholmes.numberOfPets()} adopted pets.`);
+console.log(`${phanson.getName()} has ${phanson.numberOfPets()} adopted pets.`);
+console.log(`${bholmes.getName()} has ${bholmes.numberOfPets()} adopted pets.`);
 
 shelter.printUnadoptedPets();
