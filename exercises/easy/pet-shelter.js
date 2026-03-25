@@ -9,6 +9,8 @@ shelter. It could also have pets, and pets not available for adoption, but we do
 
 Based on my experimentation with an array, I think the object reference is actually more elegant, because then I don't 
 have to do findIndex every time. 
+
+Next thing to do: Change data structure from array to object
 */
 
 class Shelter {
