@@ -52,7 +52,7 @@ banner1.displayBanner();
 // |                                            |
 // +--------------------------------------------+
 
-let banner2 = new Banner("", 75);
+let banner2 = new Banner("", 0);
 banner2.displayBanner();
 // +--+
 // |  |
