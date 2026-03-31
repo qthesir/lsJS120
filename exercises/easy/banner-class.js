@@ -1,6 +1,7 @@
 class Banner {
-  constructor(message) {
+  constructor(message, width) {
     this.message = message;
+    this.width = width ?? this.message.length;
   }
 
   displayBanner() {
@@ -16,15 +17,27 @@ class Banner {
   }
 
   horizontalRule() {
-    return `+${"-".repeat(this.message.length + 2)}+`;
+    return `+-${"-".repeat(this.width)}-+`;
   }
 
   emptyLine() {
-    return `| ${" ".repeat(this.message.length)} |`;
+    return `| ${" ".repeat(this.width)} |`;
   }
 
   messageLine() {
-    return `| ${this.message} |`;
+    if (this.width <= 0) {
+      return `|  |`;
+    }
+
+    let widthRemainder = this.width - this.message.length;
+    if (widthRemainder < 0) {
+      let truncatedMessage = this.message.slice(0, this.width - 3);
+      return `| ${truncatedMessage}... |`;
+    } else {
+      return `| ${" ".repeat(Math.ceil(widthRemainder / 2))}${
+        this.message
+      }${" ".repeat(Math.floor(widthRemainder / 2))} |`;
+    }
   }
 }
 
@@ -38,7 +51,7 @@ banner1.displayBanner();
 // |                                            |
 // +--------------------------------------------+
 
-let banner2 = new Banner("");
+let banner2 = new Banner("", 75);
 banner2.displayBanner();
 // +--+
 // |  |
