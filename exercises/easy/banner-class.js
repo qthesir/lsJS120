@@ -16,12 +16,11 @@ class Banner {
   }
 
   horizontalRule() {
-    let horizontalLine = `+${"-".repeat(this.message.length + 2)}+`;
-    return horizontalLine;
+    return `+${"-".repeat(this.message.length + 2)}+`;
   }
 
   emptyLine() {
-    return `|${" ".repeat(this.message.length + 2)}|`;
+    return `| ${" ".repeat(this.message.length)} |`;
   }
 
   messageLine() {
