@@ -1,7 +1,8 @@
 class Banner {
   constructor(message, width) {
-    this.message = message;
-    this.width = width ?? this.message.length;
+    this.message = String(message);
+    this.width =
+      typeof width === "number" && width > 0 ? width : this.message.length;
   }
 
   displayBanner() {
@@ -25,8 +26,8 @@ class Banner {
   }
 
   messageLine() {
-    if (this.width <= 0) {
-      return `|  |`;
+    if (this.width < 3) {
+      return `| ${".".repeat(this.width)} |`;
     }
 
     let widthRemainder = this.width - this.message.length;
@@ -34,16 +35,16 @@ class Banner {
       let truncatedMessage = this.message.slice(0, this.width - 3);
       return `| ${truncatedMessage}... |`;
     } else {
-      return `| ${" ".repeat(Math.ceil(widthRemainder / 2))}${
-        this.message
-      }${" ".repeat(Math.floor(widthRemainder / 2))} |`;
+      let leftPadding = " ".repeat(Math.ceil(widthRemainder / 2));
+      let rightPadding = " ".repeat(Math.floor(widthRemainder / 2));
+      return `| ${leftPadding}${this.message}${rightPadding} |`;
     }
   }
 }
 
 // Test cases
 
-let banner1 = new Banner("To boldly go where no one has gone before.");
+let banner1 = new Banner("To boldly go where no one has gone before.", 50);
 banner1.displayBanner();
 // +--------------------------------------------+
 // |                                            |
