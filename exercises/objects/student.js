@@ -5,31 +5,39 @@ function createStudent(name, year) {
     courses: [],
 
     info() {
-      console.log(`${name} is a ${year} year student`);
+      console.log(`${this.name} is a ${this.year} year student`);
     },
+
     addCourse(course) {
       this.courses.push(course);
     },
+
     listCourses() {
-      console.log(this.courses);
+      return this.courses;
     },
+
     addNote(code, note) {
       let course = this.courses.find((course) => course.code === code);
+      if (!course) return;
+
       if (course.note) {
-        course.note.push(note);
+        course.note += `; ${note}`;
       } else {
-        course.note = [note];
+        course.note = note;
       }
     },
 
     updateNote(code, note) {
       let course = this.courses.find((course) => course.code === code);
+      if (!course) return;
+
       course.note = [note];
     },
+
     viewNotes() {
       this.courses.forEach((course) => {
         if (course.note) {
-          console.log(`${course.name}: ${course.note.join("; ")}`);
+          console.log(`${course.name}: ${course.note}`);
         }
       });
     },
