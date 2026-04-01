@@ -1,5 +1,18 @@
 function objectsEqual(obj1, obj2) {
-  return Object.keys(obj1).every((key) => {
+  return valuesTheSame(obj1, obj2) && keysTheSame(obj1, obj2);
+}
+
+function keysTheSame(obj1, obj2) {
+  let sortedObj1Keys = Object.getOwnPropertyNames(obj1).sort();
+  let sortedObj2Keys = Object.getOwnPropertyNames(obj2).sort();
+
+  return sortedObj1Keys.every((key, index) => {
+    return key === sortedObj2Keys[index];
+  });
+}
+
+function valuesTheSame(obj1, obj2) {
+  return Object.keys(obj2).every((key) => {
     return obj1[key] === obj2[key] && obj2.hasOwnProperty(key);
   });
 }
