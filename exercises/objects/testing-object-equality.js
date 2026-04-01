@@ -20,7 +20,17 @@ function keysTheSame(obj1, obj2) {
 }
 
 function valuesTheSame(obj1, obj2) {
-  return Object.keys(obj2).every((key) => {
+  return Object.getOwnPropertyNames(obj1).every((key) => {
+    const bothNonNullObjects =
+      typeof obj1[key] === "object" &&
+      typeof obj2[key] === "object" &&
+      obj1[key] !== null &&
+      obj2[key] !== null;
+
+    if (bothNonNullObjects) {
+      return objectsEqual(obj1[key], obj2[key]);
+    }
+
     return obj1[key] === obj2[key];
   });
 }
@@ -30,6 +40,19 @@ console.log(objectsEqual({ a: "foo", b: "bar" }, { a: "foo" })); // false
 console.log(objectsEqual({ a: "foo", b: "bar" }, { b: "bar", a: "foo" })); // true
 console.log(objectsEqual({}, {})); // true
 console.log(objectsEqual({ a: "foo", b: undefined }, { a: "foo", c: 1 })); // false
+console.log(
+  objectsEqual(
+    { a: { a: "foo", b: undefined } },
+    { a: { a: "foo", b: undefined } }
+  )
+); // false
+
+console.log(
+  objectsEqual(
+    { a: { a: "foo", b: undefined } },
+    { a: { a: "foo", b: undefined }, b: 1 }
+  )
+); // false
 
 /*
 Ok this is a little trickier than I expected... Lets think about this. The issue I'm having is 
