@@ -14,16 +14,14 @@ function createSchool() {
 
     addGrade(studentName, courseCode, grade) {
       let student = this.findStudentByName(studentName);
-      let course = student
-        .listCourses()
-        .find((course) => course.code === courseCode);
+      let course = student.findCourseByCode(courseCode);
 
       course.grade = grade;
     },
 
     getReportCard(studentName) {
       let student = this.findStudentByName(studentName);
-      student.listCourses.forEach((course) => {
+      student.listCourses().forEach((course) => {
         if (course.grade) {
           console.log(`${course.name}: ${course.grade}`);
         } else {
@@ -32,7 +30,77 @@ function createSchool() {
       });
     },
 
-    courseReport() {},
+    /* principle issue with this one is that there is a list of unique courses. Maybe I create a new object, which contains the course
+      and all the grades, and then iterates through the list of grades and set a variable course name. But this feels kind wrong, 
+      because I'm setting the variable a bunch of times. And then what to do if I can't find a grade? I also need the course name 
+      before I start logging the individual grades and then the average. So there's a few things going on in this function. First thing
+      is that I need to render the name. then i need to render the individual grades... fuck, with the students name. and then I need to average all the grades. So I need
+      to get the list of courses first, perhaps, and then extract the information from that list. So I need to create a list of all the
+      courses. I need to use that list to get the name, log the name from the first course in the list. Then I can iterate through the 
+      list of courses and log the grade. then I can calculate the average grade and log the average. Thats it. Got it. 
+      
+      Nope, don't quite got it. I think I need to take a step back and do this out in pseudocode. 
+
+      Input: courseCode
+      Output: Course name headline, list of name of student with their corresponding grade for the course, and then the average 
+      grade of all students. 
+
+      I almost need a need data structure. I could create a new list, which contains objects with 3 properties: nameOfCourse, nameOfStudent,
+      and grade. That gives me everything I need to render the course info. So why dont I do that? Oh, but for the average, I still have 
+      to filter the list of grades to just the students that actually have a grade. if there is no grade, then it is 0. 
+
+      Algorithm 
+      - Accept course code as an input
+      - Declare a variable "courseList"
+      - Iterate through the list of students
+      - If the student has the course that matches the code:
+        - Create a new object with student name from the student, the course name, and the grade
+        - add the object to course list
+      - Log the course header with the course name from the first element of the courseList array
+      - For each element in the course list:
+        - Log the name of the student and the grade
+      - Compute the average grade of all the students from the course list
+      - Log the average grade. 
+
+      */
+
+    courseReport(courseCode) {
+      let courseList = [];
+      this.students.forEach((student) => {
+        let course = student.findCourseByCode(courseCode);
+        if (course) {
+          courseList.push({
+            studentName: student.name,
+            courseName: course.name,
+            courseGrade: course.grade,
+          });
+        }
+      });
+
+      console.log(" ");
+      console.log(`=${courseList[0].courseName} Grades=`);
+
+      courseList.forEach((course) => {
+        console.log(`${course.studentName}: ${course.courseGrade}`);
+      });
+
+      let averageGrade = this.getAverageGrade(courseList);
+      console.log("---");
+      console.log(`Course Average: ${averageGrade}`);
+    },
+
+    getAverageGrade(courseList) {
+      let gradeList = courseList.filter((course) => {
+        return course.courseGrade;
+      });
+
+      let totalGrade = gradeList.reduce((averageGrade, { courseGrade }) => {
+        averageGrade += courseGrade;
+        return averageGrade;
+      }, 0);
+
+      return totalGrade / gradeList.length;
+    },
 
     findStudentByName(studentName) {
       return this.students.find((student) => student.name === studentName);
@@ -56,6 +124,10 @@ function createStudent(name, year) {
 
     listCourses() {
       return this.courses;
+    },
+
+    findCourseByCode(courseCode) {
+      return this.listCourses().find((course) => course.code === courseCode);
     },
 
     addNote(code, note) {
@@ -85,3 +157,36 @@ function createStudent(name, year) {
     },
   };
 }
+
+let school = createSchool();
+
+school.addStudent("Foo", "1st");
+school.addStudent("Paul", "3rd");
+school.addStudent("Mary", "1st");
+school.addStudent("Kim", "2nd");
+let mathCourse = { name: "Math", code: 101 };
+let advancedMathCourse = { name: "Advanced Math", code: 102 };
+let physics = { name: "Physics", code: 202 };
+school.enrollStudent("Foo", mathCourse);
+school.enrollStudent("Foo", advancedMathCourse);
+school.enrollStudent("Foo", physics);
+school.enrollStudent("Paul", mathCourse);
+school.enrollStudent("Paul", advancedMathCourse);
+school.enrollStudent("Paul", physics);
+school.enrollStudent("Mary", mathCourse);
+school.enrollStudent("Kim", mathCourse);
+school.enrollStudent("Kim", advancedMathCourse);
+school.addGrade("Foo", 101, 87);
+school.addGrade("Foo", 102, 75);
+school.addGrade("Paul", 101, 95);
+school.addGrade("Paul", 102, 90);
+school.addGrade("Mary", 101, 91);
+school.addGrade("Kim", 101, 93);
+school.addGrade("Kim", 102, 90);
+school.getReportCard("Foo");
+school.getReportCard("Paul");
+school.getReportCard("Mary");
+school.getReportCard("Kim");
+school.courseReport(101);
+school.courseReport(102);
+school.courseReport(202)
