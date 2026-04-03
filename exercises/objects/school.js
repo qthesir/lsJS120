@@ -20,6 +20,7 @@ function createSchool() {
     },
 
     getReportCard(studentName) {
+      console.log("");
       let student = this.findStudentByName(studentName);
       student.listCourses().forEach((course) => {
         if (course.grade) {
@@ -77,6 +78,11 @@ function createSchool() {
         }
       });
 
+      let averageGrade = this.getAverageGrade(courseList);
+      if (averageGrade === NaN) {
+        return undefined;
+      }
+
       console.log(" ");
       console.log(`=${courseList[0].courseName} Grades=`);
 
@@ -84,7 +90,6 @@ function createSchool() {
         console.log(`${course.studentName}: ${course.courseGrade}`);
       });
 
-      let averageGrade = this.getAverageGrade(courseList);
       console.log("---");
       console.log(`Course Average: ${averageGrade}`);
     },
