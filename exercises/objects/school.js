@@ -1,8 +1,17 @@
 function createSchool() {
+  // Where is the right place to put allowed years const? Where to put static variables on factories?
+  // Cant recall.
+
+  const ALLOWED_YEARS = ["1st", "2nd", "3rd", "4th", "5th"];
   return {
     students: [],
 
     addStudent(name, year) {
+      if (!ALLOWED_YEARS.includes(year)) {
+        console.log("Invalid Year");
+        return;
+      }
+
       let student = createStudent(name, year);
       this.students.push(student);
     },
@@ -79,17 +88,15 @@ function createSchool() {
       });
 
       let averageGrade = this.getAverageGrade(courseList);
-      if (averageGrade === NaN) {
+      if (!averageGrade) {
         return undefined;
       }
 
       console.log(" ");
       console.log(`=${courseList[0].courseName} Grades=`);
-
       courseList.forEach((course) => {
         console.log(`${course.studentName}: ${course.courseGrade}`);
       });
-
       console.log("---");
       console.log(`Course Average: ${averageGrade}`);
     },
@@ -99,9 +106,13 @@ function createSchool() {
         return course.courseGrade;
       });
 
-      let totalGrade = gradeList.reduce((averageGrade, { courseGrade }) => {
-        averageGrade += courseGrade;
-        return averageGrade;
+      if (gradeList.length === 0) {
+        return undefined;
+      }
+
+      let totalGrade = gradeList.reduce((totalGrade, { courseGrade }) => {
+        totalGrade += courseGrade;
+        return totalGrade;
       }, 0);
 
       return totalGrade / gradeList.length;
@@ -195,3 +206,5 @@ school.getReportCard("Kim");
 school.courseReport(101);
 school.courseReport(102);
 school.courseReport(202);
+
+school.addStudent("Bar", "6th");
