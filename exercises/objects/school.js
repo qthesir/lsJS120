@@ -1,8 +1,9 @@
+const ALLOWED_YEARS = ["1st", "2nd", "3rd", "4th", "5th"];
+
 function createSchool() {
   // Where is the right place to put allowed years const? Where to put static variables on factories?
   // Cant recall.
 
-  const ALLOWED_YEARS = ["1st", "2nd", "3rd", "4th", "5th"];
   return {
     students: [],
 
@@ -41,11 +42,11 @@ function createSchool() {
     },
 
     courseReport(courseCode) {
-      let courseList = [];
+      let courseEntries = [];
       this.students.forEach((student) => {
         let course = student.findCourseByCode(courseCode);
-        if (course) {
-          courseList.push({
+        if (course && course.grade !== undefined) {
+          courseEntries.push({
             studentName: student.name,
             courseName: course.name,
             courseGrade: course.grade,
@@ -53,35 +54,28 @@ function createSchool() {
         }
       });
 
-      let averageGrade = this.getAverageGrade(courseList);
-      if (!averageGrade) {
-        return undefined;
+      if (courseEntries.length === 0) {
+        return undefined
       }
 
+      let averageGrade = this.getAverageGrade(courseEntries);
+
       console.log(" ");
-      console.log(`=${courseList[0].courseName} Grades=`);
-      courseList.forEach((course) => {
+      console.log(`=${courseEntries[0].courseName} Grades=`);
+      courseEntries.forEach((course) => {
         console.log(`${course.studentName}: ${course.courseGrade}`);
       });
       console.log("---");
       console.log(`Course Average: ${averageGrade}`);
     },
 
-    getAverageGrade(courseList) {
-      let gradeList = courseList.filter((course) => {
-        return course.courseGrade;
-      });
-
-      if (gradeList.length === 0) {
-        return undefined;
-      }
-
-      let totalGrade = gradeList.reduce((totalGrade, { courseGrade }) => {
+    getAverageGrade(courseEntries) {
+      let totalGrade = courseEntries.reduce((totalGrade, { courseGrade }) => {
         totalGrade += courseGrade;
         return totalGrade;
       }, 0);
 
-      return totalGrade / gradeList.length;
+      return totalGrade / courseEntries.length;
     },
 
     findStudentByName(studentName) {
@@ -175,10 +169,10 @@ school.courseReport(202);
 
 school.addStudent("Bar", "6th");
 
-    /* 
+/* 
       
       PEDAC for school.courseReport() 
-      
+
       principle issue with this one is that there is a list of unique courses. Maybe I create a new object, which contains the course
       and all the grades, and then iterates through the list of grades and set a variable course name. But this feels kind wrong, 
       because I'm setting the variable a bunch of times. And then what to do if I can't find a grade? I also need the course name 
