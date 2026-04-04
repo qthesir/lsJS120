@@ -31,7 +31,7 @@ function createStudent(name, year) {
       let course = this.courses.find((course) => course.code === code);
       if (!course) return;
 
-      course.note = [note];
+      course.note = note;
     },
 
     viewNotes() {

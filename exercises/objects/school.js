@@ -15,6 +15,7 @@ function createSchool() {
 
       let student = createStudent(name, year);
       this.students.push(student);
+      return student;
     },
 
     enrollStudent(studentName, course) {
@@ -55,7 +56,7 @@ function createSchool() {
       });
 
       if (courseEntries.length === 0) {
-        return undefined
+        return undefined;
       }
 
       let averageGrade = this.getAverageGrade(courseEntries);
@@ -70,10 +71,10 @@ function createSchool() {
     },
 
     getAverageGrade(courseEntries) {
-      let totalGrade = courseEntries.reduce((totalGrade, { courseGrade }) => {
-        totalGrade += courseGrade;
-        return totalGrade;
-      }, 0);
+      let totalGrade = courseEntries.reduce(
+        (sum, { courseGrade }) => sum + courseGrade,
+        0
+      );
 
       return totalGrade / courseEntries.length;
     },
@@ -121,7 +122,7 @@ function createStudent(name, year) {
       let course = this.courses.find((course) => course.code === code);
       if (!course) return;
 
-      course.note = [note];
+      course.note = note;
     },
 
     viewNotes() {
