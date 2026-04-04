@@ -17,12 +17,17 @@ function createSchool() {
 
     enrollStudent(studentName, course) {
       let student = this.findStudentByName(studentName);
+      if (!student) return;
+
       student.addCourse(course);
     },
 
     addGrade(studentName, courseCode, grade) {
       let student = this.findStudentByName(studentName);
+      if (!student) return;
+
       let course = student.findCourseByCode(courseCode);
+      if (!course) return;
 
       course.grade = grade;
     },
@@ -69,10 +74,7 @@ function createSchool() {
     },
 
     getAverageGrade(courseEntries) {
-      let totalGrade = courseEntries.reduce(
-        (sum, grade) => sum + grade,
-        0
-      );
+      let totalGrade = courseEntries.reduce((sum, grade) => sum + grade, 0);
 
       return totalGrade / courseEntries.length;
     },
