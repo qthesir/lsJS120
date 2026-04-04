@@ -15,26 +15,19 @@ function createSchool() {
       return student;
     },
 
-    enrollStudent(studentName, course) {
-      let student = this.findStudentByName(studentName);
-      if (!student) return;
-
+    enrollStudent(student, course) {
       student.addCourse(course);
     },
 
-    addGrade(studentName, courseCode, grade) {
-      let student = this.findStudentByName(studentName);
-      if (!student) return;
-
+    addGrade(student, courseCode, grade) {
       let course = student.findCourseByCode(courseCode);
       if (!course) return;
 
       course.grade = grade;
     },
 
-    getReportCard(studentName) {
+    getReportCard(student) {
       console.log("");
-      let student = this.findStudentByName(studentName);
       student.listCourses().forEach((course) => {
         if (course.grade) {
           console.log(`${course.name}: ${course.grade}`);
@@ -77,10 +70,6 @@ function createSchool() {
       let totalGrade = courseEntries.reduce((sum, grade) => sum + grade, 0);
 
       return totalGrade / courseEntries.length;
-    },
-
-    findStudentByName(studentName) {
-      return this.students.find((student) => student.name === studentName);
     },
   };
 }
@@ -137,33 +126,33 @@ function createStudent(name, year) {
 
 let school = createSchool();
 
-school.addStudent("Foo", "1st");
-school.addStudent("Paul", "3rd");
-school.addStudent("Mary", "1st");
-school.addStudent("Kim", "2nd");
+let foo = school.addStudent("Foo", "1st");
+let paul = school.addStudent("Paul", "3rd");
+let mary = school.addStudent("Mary", "1st");
+let kim = school.addStudent("Kim", "2nd");
 let mathCourse = { name: "Math", code: 101 };
 let advancedMathCourse = { name: "Advanced Math", code: 102 };
 let physics = { name: "Physics", code: 202 };
-school.enrollStudent("Foo", { name: "Math", code: 101 });
-school.enrollStudent("Foo", { name: "Advanced Math", code: 102 });
-school.enrollStudent("Foo", { name: "Physics", code: 202 });
-school.enrollStudent("Paul", { name: "Math", code: 101 });
-school.enrollStudent("Paul", { name: "Advanced Math", code: 102 });
-school.enrollStudent("Paul", { name: "Physics", code: 202 });
-school.enrollStudent("Mary", { name: "Math", code: 101 });
-school.enrollStudent("Kim", { name: "Math", code: 101 });
-school.enrollStudent("Kim", { name: "Advanced Math", code: 102 });
-school.addGrade("Foo", 101, 87);
-school.addGrade("Foo", 102, 75);
-school.addGrade("Paul", 101, 95);
-school.addGrade("Paul", 102, 90);
-school.addGrade("Mary", 101, 91);
-school.addGrade("Kim", 101, 93);
-school.addGrade("Kim", 102, 90);
-school.getReportCard("Foo");
-school.getReportCard("Paul");
-school.getReportCard("Mary");
-school.getReportCard("Kim");
+school.enrollStudent(foo, { name: "Math", code: 101 });
+school.enrollStudent(foo, { name: "Advanced Math", code: 102 });
+school.enrollStudent(foo, { name: "Physics", code: 202 });
+school.enrollStudent(paul, { name: "Math", code: 101 });
+school.enrollStudent(paul, { name: "Advanced Math", code: 102 });
+school.enrollStudent(paul, { name: "Physics", code: 202 });
+school.enrollStudent(mary, { name: "Math", code: 101 });
+school.enrollStudent(kim, { name: "Math", code: 101 });
+school.enrollStudent(kim, { name: "Advanced Math", code: 102 });
+school.addGrade(foo, 101, 87);
+school.addGrade(foo, 102, 75);
+school.addGrade(paul, 101, 95);
+school.addGrade(paul, 102, 90);
+school.addGrade(mary, 101, 91);
+school.addGrade(kim, 101, 93);
+school.addGrade(kim, 102, 90);
+school.getReportCard(foo);
+school.getReportCard(paul);
+school.getReportCard(mary);
+school.getReportCard(kim);
 school.courseReport(101);
 school.courseReport(102);
 school.courseReport(202);
