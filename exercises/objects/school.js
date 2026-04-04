@@ -1,9 +1,6 @@
 const ALLOWED_YEARS = ["1st", "2nd", "3rd", "4th", "5th"];
 
 function createSchool() {
-  // Where is the right place to put allowed years const? Where to put static variables on factories?
-  // Cant recall.
-
   return {
     students: [],
 
