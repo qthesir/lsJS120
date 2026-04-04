@@ -56,7 +56,8 @@ function createSchool() {
         return undefined;
       }
 
-      let averageGrade = this.getAverageGrade(courseEntries);
+      let grades = courseEntries.map((course) => course.courseGrade);
+      let averageGrade = this.getAverageGrade(grades);
 
       console.log(" ");
       console.log(`=${courseEntries[0].courseName} Grades=`);
@@ -69,7 +70,7 @@ function createSchool() {
 
     getAverageGrade(courseEntries) {
       let totalGrade = courseEntries.reduce(
-        (sum, { courseGrade }) => sum + courseGrade,
+        (sum, grade) => sum + grade,
         0
       );
 
