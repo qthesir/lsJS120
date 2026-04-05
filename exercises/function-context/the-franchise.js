@@ -24,7 +24,7 @@ let franchise = {
 
 /*
 The reason why this will not work is because, although the allMovies method will run with the franchise object as 
-execution context, the function passed into the .map array method runs with the global scope, rather 
+execution context, the anonymous function passed into the .map array method runs with the global scope, rather 
 than the function scope (it does not inherit the scope from the surrounding function). 
 
 The solution to this problem is to use an arrow function instead of a regular function. Arrow functions
