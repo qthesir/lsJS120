@@ -3,7 +3,7 @@ let franchise = {
   allMovies: function () {
     return [1, 2, 3].map(function (number) {
       return this.name + " " + number;
-    });
+    }, this);
   },
 };
 
@@ -18,4 +18,5 @@ let franchise2 = {
   },
 };
 
-console.log(franchise2.allMovies());
+console.log(franchise.allMovies());
+console.log(franchise2.allMovies())
