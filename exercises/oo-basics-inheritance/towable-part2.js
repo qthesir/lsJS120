@@ -1,16 +1,20 @@
 const towMixin = {
   tow() {
     return "I can tow a trailer!";
+  },
+};
+
+class Vehicle {
+  constructor(year) {
+    this.year = year;
   }
 }
 
-class Truck {
-  constructor() {
-    Object.assign(this, towMixin);
-  }
-}
+class Truck extends Vehicle {}
 
-class Car {}
+class Car extends Vehicle {}
+
+Object.assign(Truck.prototype, towMixin);
 
 let truck = new Truck(2002);
 console.log(truck.year);
