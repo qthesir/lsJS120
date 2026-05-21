@@ -19,8 +19,8 @@ Person.prototype.sleep = function () {
 };
 
 function Doctor(firstName, lastName, age, gender, specialization) {
-  this.specialization = specialization;
   Person.call(this, firstName, lastName, age, gender);
+  this.specialization = specialization;
 }
 
 Doctor.prototype = Object.create(Person.prototype);
@@ -30,8 +30,8 @@ Doctor.prototype.diagnose = function () {
 };
 
 function Professor(firstName, lastName, age, gender, subject) {
-  this.subject = subject;
   Person.call(this, firstName, lastName, age, gender);
+  this.subject = subject;
 }
 
 Professor.prototype = Object.create(Person.prototype);
@@ -41,8 +41,8 @@ Professor.prototype.teach = function () {
 };
 
 function Student(firstName, lastName, age, gender, degree) {
-  this.degree = degree;
   Person.call(this, firstName, lastName, age, gender);
+  this.degree = degree;
 }
 
 Student.prototype = Object.create(Person.prototype);
@@ -59,8 +59,8 @@ function GraduateStudent(
   degree,
   graduateDegree
 ) {
-  this.graduateDegree = graduateDegree;
   Student.call(this, firstName, lastName, age, gender, degree);
+  this.graduateDegree = graduateDegree;
 }
 
 GraduateStudent.prototype = Object.create(Student.prototype);
