@@ -2,7 +2,7 @@ class CircularBuffer {
   static EMPTY_VALUE = null;
   constructor(bufferSize) {
     this.bufferSize = bufferSize;
-    this.buffer = Array(bufferSize).fill(null);
+    this.buffer = Array(bufferSize).fill(CircularBuffer.EMPTY_VALUE);
     this.nextToAdd = 0;
     this.nextToRemove = 0;
     this.itemCount = 0;
