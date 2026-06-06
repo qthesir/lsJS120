@@ -1,18 +1,24 @@
 class CircularBuffer {
   constructor(bufferSize) {
     this.bufferSize = bufferSize;
-    this.buffer = Array();
-    this.currentIndex = 0;
-    this.emptySlot = undefined;
+    this.buffer = Array(bufferSize).fill(null);
+    this.nextToAdd = 0;
+    this.nextToRemove = 0;
+    this.emptySlot = null;
   }
 
   put(value) {
-    const newestObjectIndexPosition = this.currentIndex % this.bufferSize;
-    this.buffer[newestObjectIndexPosition] = {
-      value: value,
-      addOrder: this.currentIndex,
-    };
-    this.incrementCurrentIndex();
+    const newestObjectIndexPosition = this.nextToAdd % this.bufferSize;
+    const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
+    const isFirstPut = this.nextToAdd !== 0;
+
+    this.buffer[newestObjectIndexPosition] = value;
+
+    if (oldestObjectIndexPosition === newestObjectIndexPosition && isFirstPut) {
+      this.incrementNextToRemove();
+    }
+
+    this.incrementNextToAdd();
   }
 
   get() {
@@ -20,35 +26,18 @@ class CircularBuffer {
       return null;
     }
 
-    let indexOfOldestObject = this.findIndexOfOldestObject();
+    const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
+    this.incrementNextToRemove();
 
-    return this.buffer.splice(indexOfOldestObject, 1, this.emptySlot)[0].value;
+    return this.buffer.splice(oldestObjectIndexPosition, 1, this.emptySlot)[0];
   }
 
-  incrementCurrentIndex() {
-    this.currentIndex += 1;
+  incrementNextToAdd() {
+    this.nextToAdd += 1;
   }
 
-  findIndexOfOldestObject() {
-    const bufferWithEmptySlotsRemoved = this.buffer.filter(
-      (val) => val !== this.emptySlot
-    );
-
-    let oldestObjectAddOrder = bufferWithEmptySlotsRemoved.reduce((acc, cv) => {
-      if (cv.addOrder < acc) {
-        acc = cv.addOrder;
-        return acc;
-      } else {
-        return acc;
-      }
-    }, bufferWithEmptySlotsRemoved[0].addOrder);
-
-    let indexOfOldestObject = this.buffer.findIndex((num) => {
-      if (num === this.emptySlot) return false;
-      return oldestObjectAddOrder === num.addOrder;
-    });
-
-    return indexOfOldestObject;
+  incrementNextToRemove() {
+    this.nextToRemove += 1;
   }
 }
 
@@ -109,4 +98,8 @@ nothing. If it hits a number in one of those slots, it will remove it. Hmmm....
 
 Put is a little more complicated... What do I need to do? I need to check the buffer immediately 
 behind it, and immediately in front of it in order. 
+
+Hmmm... adding an index to each value seems to be making this excessively complicated. I actually do not have 
+to do that. The only information I need, is which object was added that was the oldest. You can use the same circular 
+reasoning that you're using for the add index, and apply it to the index that is being removed. 
 */
