@@ -1,47 +1,56 @@
 class CircularBuffer {
+  static EMPTY_VALUE = null;
   constructor(bufferSize) {
     this.bufferSize = bufferSize;
     this.buffer = Array(bufferSize).fill(null);
     this.nextToAdd = 0;
     this.nextToRemove = 0;
-    this.emptyValue = null;
+    this.itemCount = 0;
   }
 
   put(value) {
-    const newestObjectIndexPosition = this.nextToAdd % this.bufferSize;
-    const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
-    const isNotFirstPut = this.nextToAdd !== 0;
+    this.buffer[this.nextToAdd] = value;
 
-    this.buffer[newestObjectIndexPosition] = value;
-
-    if (oldestObjectIndexPosition === newestObjectIndexPosition && isNotFirstPut) {
+    const bufferIsFull = this.itemCount === this.bufferSize;
+    if (bufferIsFull) {
       this.incrementNextToRemove();
     }
 
     this.incrementNextToAdd();
+    this.incrementItemCount();
   }
 
   get() {
-    if (this.buffer.every((val) => val === this.emptyValue)) {
+    const bufferIsEmpty = this.itemCount === 0;
+    if (bufferIsEmpty) {
       return null;
     }
 
-    const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
-
-    const oldestObject = this.buffer[oldestObjectIndexPosition]
-    this.buffer[oldestObjectIndexPosition] = this.emptyValue
+    const oldestObject = this.buffer[this.nextToRemove];
+    this.buffer[this.nextToRemove] = CircularBuffer.EMPTY_VALUE;
 
     this.incrementNextToRemove();
+    this.decrementItemCount();
 
-    return oldestObject
+    return oldestObject;
   }
 
   incrementNextToAdd() {
-    this.nextToAdd += 1;
+    this.nextToAdd = (this.nextToAdd + 1) % this.bufferSize;
   }
 
   incrementNextToRemove() {
-    this.nextToRemove += 1;
+    this.nextToRemove = (this.nextToRemove + 1) % this.bufferSize;
+  }
+
+  incrementItemCount() {
+    if (this.itemCount < this.bufferSize) {
+      this.itemCount += 1;
+    }
+  }
+
+  decrementItemCount() {
+    this.itemCount -= 1;
   }
 }
 
