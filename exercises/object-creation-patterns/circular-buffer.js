@@ -4,17 +4,17 @@ class CircularBuffer {
     this.buffer = Array(bufferSize).fill(null);
     this.nextToAdd = 0;
     this.nextToRemove = 0;
-    this.emptySlot = null;
+    this.emptyValue = null;
   }
 
   put(value) {
     const newestObjectIndexPosition = this.nextToAdd % this.bufferSize;
     const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
-    const isFirstPut = this.nextToAdd !== 0;
+    const isNotFirstPut = this.nextToAdd !== 0;
 
     this.buffer[newestObjectIndexPosition] = value;
 
-    if (oldestObjectIndexPosition === newestObjectIndexPosition && isFirstPut) {
+    if (oldestObjectIndexPosition === newestObjectIndexPosition && isNotFirstPut) {
       this.incrementNextToRemove();
     }
 
@@ -22,14 +22,18 @@ class CircularBuffer {
   }
 
   get() {
-    if (this.buffer.every((val) => val === this.emptySlot)) {
+    if (this.buffer.every((val) => val === this.emptyValue)) {
       return null;
     }
 
     const oldestObjectIndexPosition = this.nextToRemove % this.bufferSize;
+
+    const oldestObject = this.buffer[oldestObjectIndexPosition]
+    this.buffer[oldestObjectIndexPosition] = this.emptyValue
+
     this.incrementNextToRemove();
 
-    return this.buffer.splice(oldestObjectIndexPosition, 1, this.emptySlot)[0];
+    return oldestObject
   }
 
   incrementNextToAdd() {
