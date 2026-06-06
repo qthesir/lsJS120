@@ -3,10 +3,12 @@ class CircularBuffer {
     this.bufferSize = bufferSize;
     this.buffer = Array();
     this.currentIndex = 0;
+    this.emptySlot = undefined;
   }
 
   put(value) {
-    this.buffer[this.currentIndex % this.bufferSize] = {
+    const newestObjectIndexPosition = this.currentIndex % this.bufferSize;
+    this.buffer[newestObjectIndexPosition] = {
       value: value,
       addOrder: this.currentIndex,
     };
@@ -14,13 +16,13 @@ class CircularBuffer {
   }
 
   get() {
-    if (this.buffer.every((val) => val === undefined)) {
+    if (this.buffer.every((val) => val === this.emptySlot)) {
       return null;
     }
 
     let indexOfOldestObject = this.findIndexOfOldestObject();
 
-    return this.buffer.splice(indexOfOldestObject, 1, undefined)[0].value;
+    return this.buffer.splice(indexOfOldestObject, 1, this.emptySlot)[0].value;
   }
 
   incrementCurrentIndex() {
@@ -29,7 +31,7 @@ class CircularBuffer {
 
   findIndexOfOldestObject() {
     const bufferWithEmptySlotsRemoved = this.buffer.filter(
-      (val) => val !== undefined
+      (val) => val !== this.emptySlot
     );
 
     let oldestObjectAddOrder = bufferWithEmptySlotsRemoved.reduce((acc, cv) => {
@@ -42,7 +44,7 @@ class CircularBuffer {
     }, bufferWithEmptySlotsRemoved[0].addOrder);
 
     let indexOfOldestObject = this.buffer.findIndex((num) => {
-      if (num === undefined) return false;
+      if (num === this.emptySlot) return false;
       return oldestObjectAddOrder === num.addOrder;
     });
 
